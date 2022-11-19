@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import axios from "axios";
 import LtaLots from "./LtaLots";
 import { DisplayMap } from "./DisplayMap";
+import "./styles.css";
 
 type CarparkDetails = {
   Agency: string;
@@ -72,7 +73,7 @@ const ApiCall = () => {
     <>
       {/* <div>{lotAvailability}</div> */}
       <h1>Main Page</h1>
-      {<DisplayMap />}
+      {<DisplayMap lotInfo={ltaCarparkAvail} coordinates={coordinates} />}
     </>
   );
 };
