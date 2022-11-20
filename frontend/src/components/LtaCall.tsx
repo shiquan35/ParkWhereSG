@@ -13,7 +13,9 @@ type CarparkDetails = {
 };
 
 const LtaCall = () => {
-  const [ltaCarparkAvail, setLtaCarparkAvail] = useState<CarparkDetails[]>([]);
+  const [ltaCarparkAvail, setLtaCarparkAvail] = useState<CarparkDetails[] | []>(
+    []
+  );
 
   useEffect(() => {
     axios
@@ -21,6 +23,8 @@ const LtaCall = () => {
       .then((res) => setLtaCarparkAvail(res.data))
       .catch((err) => console.log(err));
   }, []);
+
+  console.log(ltaCarparkAvail);
 
   const lotAvailability = ltaCarparkAvail.map(
     (lots: CarparkDetails, i: number) => {
