@@ -4,6 +4,7 @@ import {
   TextInput,
   Button,
   Container,
+  Stack,
   Alert,
   Flex,
 } from "@mantine/core";
@@ -32,15 +33,16 @@ const useStyles = createStyles((theme) => ({
   },
 }));
 
-const Login = () => {
+const SignUp = () => {
   // You can add these classes as classNames to any Mantine input, it will work the same
   const { classes } = useStyles();
   const [visible, { toggle }] = useDisclosure(false);
-  const { login } = useAuth();
+  const { signup } = useAuth();
   const [error, setError] = useState<string>("");
   const [loading, setLoading] = useState(false);
   const emailRef = useRef<HTMLInputElement>(null!);
   const passwordRef = useRef<HTMLInputElement>(null!);
+  const passwordCfmRef = useRef<HTMLInputElement>(null!);
 
   let navigate = useNavigate();
 
@@ -48,21 +50,25 @@ const Login = () => {
     e.preventDefault();
     console.log("clicked");
 
+    if (passwordCfmRef.current.value !== passwordRef.current.value) {
+      return setError("Passwords do not match!");
+    }
+
     try {
       setError("");
       setLoading(true);
       //what does "!" mean?
-      await login(emailRef.current.value, passwordRef.current.value);
+      await signup(emailRef.current.value, passwordRef.current.value);
       navigate("/dashboard", { replace: true });
     } catch {
-      setError("Failed to Login!");
+      setError("Failed to create account");
     }
     setLoading(false);
   };
 
   return (
     <Container sx={{ maxWidth: 500 }} mx="auto">
-      <h2>Log In here</h2>
+      <h2>Sign Up here</h2>
       {error && (
         <Alert title="Oops!" color="red">
           {error}
@@ -79,17 +85,24 @@ const Login = () => {
             required
             classNames={classes}
           />
-          <PasswordInput
-            description="Password must include at least one letter, number and special character"
-            // validation of password required here.
-            label="Password"
-            sx={{ maxWidth: 380 }}
-            mx="auto"
-            visible={visible}
-            onVisibilityChange={toggle}
-            ref={passwordRef}
-            required
-          />
+          <Stack sx={{ maxWidth: 380, marginTop: 10 }} mx="auto">
+            <PasswordInput
+              description="Password must include at least one letter, number and special character"
+              // validation of password required here.
+              label="Password"
+              visible={visible}
+              onVisibilityChange={toggle}
+              ref={passwordRef}
+              required
+            />
+            <PasswordInput
+              label="Confirm password"
+              visible={visible}
+              onVisibilityChange={toggle}
+              ref={passwordCfmRef}
+              required
+            />
+          </Stack>
 
           <Button
             disabled={loading}
@@ -97,18 +110,18 @@ const Login = () => {
             sx={{ marginTop: 15, width: 380 }}
             mx="auto"
           >
-            Log in!
+            Create my account!
           </Button>
         </form>
       </Container>
 
       <Flex>
         <h4>
-          Don't have an account? <Link to="/">Sign Up!</Link>
+          Already have an account? <Link to="/login">Log in</Link>
         </h4>
       </Flex>
     </Container>
   );
 };
 
-export default Login;
+export default SignUp;
