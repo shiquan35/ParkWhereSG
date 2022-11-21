@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
-import LtaLots from "./LtaLots";
+import LtaLots from "../pages/LtaLots";
 
 type CarparkDetails = {
   Agency: string;
