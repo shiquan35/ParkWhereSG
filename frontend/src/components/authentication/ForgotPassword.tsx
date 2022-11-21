@@ -7,6 +7,7 @@ import {
   Popover,
   Box,
   Button,
+  Alert,
 } from "@mantine/core";
 import { useAuth } from "../firebaseContext/FirebaseContext";
 
@@ -93,6 +94,16 @@ export const ForgotPassword = () => {
         width="target"
         transition="pop"
       >
+        {error && (
+          <Alert title="Oops!" color="red">
+            {error}
+          </Alert>
+        )}
+        {!error && message && (
+          <Alert title="Success!" color="green">
+            {message}
+          </Alert>
+        )}
         <Popover.Target>
           <form onSubmit={handlePasswordResetSubmit}>
             <div
@@ -107,7 +118,9 @@ export const ForgotPassword = () => {
                 value={value}
                 onChange={(event) => setValue(event.currentTarget.value)}
               />
-              <Button type="submit">Reset Password</Button>
+              <Button disabled={loading} type="submit">
+                Reset Password
+              </Button>
             </div>
           </form>
         </Popover.Target>
