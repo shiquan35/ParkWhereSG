@@ -65,7 +65,7 @@ const ApiCall = () => {
         // setCoordinates(allCarparkCoord);
       }
     );
-    console.log(coordinatesMap);
+    // console.log(coordinatesMap);
     setCoordinates(coordinatesMap);
   }, [ltaCarparkAvail]);
 
@@ -73,6 +73,11 @@ const ApiCall = () => {
     <>
       {/* <div>{lotAvailability}</div> */}
       <h1>Main Page</h1>
+      <h6>
+        Disclaimer: Limited to data provided by LTA Datamall.
+        <br />
+        Zero lot availability could be due to missing data.
+      </h6>
       {<DisplayMap lotInfo={ltaCarparkAvail} coordinates={coordinates} />}
     </>
   );

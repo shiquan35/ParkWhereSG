@@ -1,6 +1,6 @@
 import * as React from "react";
 // import { Map, useMap } from "react-map-gl";
-import ReactMapGL, { Marker } from "react-map-gl";
+import ReactMapGL, { Marker, Popup } from "react-map-gl";
 import "mapbox-gl/dist/mapbox-gl.css";
 import carparkImage from "../carpark.png";
 
@@ -22,28 +22,42 @@ export interface IAppProps {
   coordinates: NumberArray[][];
 }
 
-type LotInfoProps = {
-  lotInfo: {
-    Agency: string;
-    Area: string;
-    AvailableLots: number;
-    CarParkID: string;
-    Development: string;
-    Location: string;
-    LotType: string;
-  }[];
+// type LotInfoProps = {
+//   lotInfo: {
+//     Agency: string;
+//     Area: string;
+//     AvailableLots: number;
+//     CarParkID: string;
+//     Development: string;
+//     Location: string;
+//     LotType: string;
+//   }[];
+// };
+
+type LotInfo = {
+  Agency: string;
+  Area: string;
+  AvailableLots: number;
+  CarParkID: string;
+  Development: string;
+  Location: string;
+  LotType: string;
 };
 
 export function DisplayMap({ lotInfo, coordinates }: IAppProps) {
   // props.lotInfo.Location
   // console.log(props.lotInfo[0].Location);
-  console.log("lotInfo", lotInfo);
-  console.log("coords", coordinates);
+  // console.log("lotInfo", lotInfo);
+  // console.log("coords", coordinates);
 
-  const [selectedCarpark, setSelectedCarpark] = React.useState(null);
-
+  const [selectedCarpark, setSelectedCarpark] = React.useState<LotInfo | null>(
+    null
+  );
+  console.log("SELECTED", selectedCarpark);
+  console.log("LAT", Number(selectedCarpark?.Location.split(" ")[0]));
   return (
     <>
+      {console.log("Lng", Number(selectedCarpark?.Location.split(" ")[1]))}
       <div className="map">
         <ReactMapGL
           style={{
@@ -63,7 +77,7 @@ export function DisplayMap({ lotInfo, coordinates }: IAppProps) {
         >
           {lotInfo.map((lot) => (
             <Marker
-              key={lot.CarParkID}
+              // key={lot.CarParkID}
               latitude={Number(lot.Location.split(" ")[0])}
               longitude={Number(lot.Location.split(" ")[1])}
             >
@@ -78,6 +92,23 @@ export function DisplayMap({ lotInfo, coordinates }: IAppProps) {
               </button>
             </Marker>
           ))}
+
+          {selectedCarpark && (
+            <Popup
+              longitude={Number(selectedCarpark.Location.split(" ")[1])}
+              latitude={Number(selectedCarpark.Location.split(" ")[0])}
+              // anchor="bottom"
+              // closeButton={true}
+              closeOnClick={false}
+              onClose={() => setSelectedCarpark(null)}
+            >
+              <div>
+                <h2>{selectedCarpark.Development}</h2>
+                <h2>Lots available: {selectedCarpark.AvailableLots}</h2>
+              </div>
+              <button>TEST BUTTON</button>
+            </Popup>
+          )}
         </ReactMapGL>
       </div>
     </>
