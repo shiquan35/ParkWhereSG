@@ -12,6 +12,7 @@ import {
   UserCredential,
 } from "firebase/auth";
 
+// ensures that it can be used in any component that is wrapped in the AuthContext.Provider
 type AuthProviderProps = {
   children: React.ReactNode;
 };
@@ -26,6 +27,7 @@ type ContextType = {
   emailUpdate: (email: string) => Promise<void>;
 };
 
+// this is what you pass into as .Provider
 const AuthContext = createContext<ContextType>({} as ContextType);
 
 // custom hook
