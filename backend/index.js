@@ -1,5 +1,3 @@
-// both methods work but its only for localhost
-// is it the same logic for external api?
 require("dotenv").config();
 const express = require("express");
 const cors = require("cors");

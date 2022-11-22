@@ -40,6 +40,8 @@ export function DisplayMap({ lotInfo, coordinates }: IAppProps) {
   console.log("lotInfo", lotInfo);
   console.log("coords", coordinates);
 
+  const [selectedCarpark, setSelectedCarpark] = React.useState(null);
+
   return (
     <>
       <div className="map">
@@ -65,7 +67,13 @@ export function DisplayMap({ lotInfo, coordinates }: IAppProps) {
               latitude={Number(lot.Location.split(" ")[0])}
               longitude={Number(lot.Location.split(" ")[1])}
             >
-              <button className="markerButton">
+              <button
+                className="markerButton"
+                onClick={(event) => {
+                  event.preventDefault();
+                  setSelectedCarpark(lot);
+                }}
+              >
                 <img src={carparkImage} alt="Carpark" />
               </button>
             </Marker>
