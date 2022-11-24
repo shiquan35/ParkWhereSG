@@ -9,6 +9,7 @@ import {
   IconParking,
 } from "@tabler/icons";
 import { Link } from "react-router-dom";
+import { useAuth } from "../firebaseContext/FirebaseContext";
 
 const useStyles = createStyles((theme, _params, getRef) => {
   const icon = getRef("icon");
@@ -91,10 +92,10 @@ const useStyles = createStyles((theme, _params, getRef) => {
 const data = [
   { link: "/map", label: "Map View", icon: IconMap },
   { link: "/list", label: "List view", icon: IconList },
-  { link: "/dashboard", label: "Dashboard", icon: IconHome },
 ];
 
 export function Navigationbar() {
+  const { user } = useAuth();
   const { classes, cx } = useStyles();
   const [active, setActive] = useState("Billing");
 
@@ -120,24 +121,55 @@ export function Navigationbar() {
         <Group className={classes.header} position="apart">
           <IconParking size={28} />
           <Text weight={500} size="sm" color="dimmed" mb="xs">
-            username here
+            {user?.email}
           </Text>
-          <Code sx={{ fontWeight: 700 }}>v3.1.2</Code>
+          <Code sx={{ fontWeight: 700 }}>v1.0</Code>
         </Group>
         {links}
+        {/* if user has not logged in, direct to login */}
+        {user ? (
+          <Link
+            className={cx(classes.link, {
+              [classes.linkActive]: "dashboard" === active,
+            })}
+            to="/dashboard"
+            key="dashboard"
+            onClick={() => {
+              setActive("dashboard");
+            }}
+          >
+            <IconHome className={classes.linkIcon} stroke={1.5} />
+            <span>Dashboard</span>{" "}
+          </Link>
+        ) : (
+          <Link
+            to="/login"
+            key="dashboard"
+            className={cx(classes.link, {
+              [classes.linkActive]: "dashboard" === active,
+            })}
+          >
+            <IconHome className={classes.linkIcon} stroke={1.5} />
+            <span>Dashboard</span>
+          </Link>
+        )}
       </Navbar.Section>
 
-      <Navbar.Section className={classes.footer}>
-        <Link to="/passwordReset" className={classes.link}>
-          <IconPassword className={classes.linkIcon} stroke={1.5} />
-          <span>Reset Password</span>
-        </Link>
+      {user ? (
+        <Navbar.Section className={classes.footer}>
+          <Link to="/passwordReset" className={classes.link}>
+            <IconPassword className={classes.linkIcon} stroke={1.5} />
+            <span>Reset Password</span>
+          </Link>
 
-        <Link to="/logout" className={classes.link}>
-          <IconLogout className={classes.linkIcon} stroke={1.5} />
-          <span>Logout</span>
-        </Link>
-      </Navbar.Section>
+          <Link to="/logout" className={classes.link}>
+            <IconLogout className={classes.linkIcon} stroke={1.5} />
+            <span>Logout</span>
+          </Link>
+        </Navbar.Section>
+      ) : (
+        ""
+      )}
     </Navbar>
   );
 }
