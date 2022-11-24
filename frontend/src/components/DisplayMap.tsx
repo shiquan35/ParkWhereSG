@@ -53,6 +53,13 @@ export function DisplayMap({ lotInfo, coordinates }: IAppProps) {
   const [selectedCarpark, setSelectedCarpark] = React.useState<LotInfo | null>(
     null
   );
+  const [toggleDisplayMarkers, setToggleDisplayMarkers] =
+    React.useState<boolean>(false);
+
+  const handleToggle = (): void => {
+    setToggleDisplayMarkers(!toggleDisplayMarkers);
+  };
+
   console.log("SELECTED", selectedCarpark);
   console.log("LAT", Number(selectedCarpark?.Location.split(" ")[0]));
   return (
@@ -75,7 +82,25 @@ export function DisplayMap({ lotInfo, coordinates }: IAppProps) {
           mapboxAccessToken="pk.eyJ1IjoiYW5uYXNxIiwiYSI6ImNsYWh5Y3k5ZDA5cDAzdmxma3pjNHBud2UifQ.N58yLSvFXR8Szwg5Zw4cag"
           mapStyle="mapbox://styles/mapbox/streets-v9"
         >
-          {lotInfo.map((lot) => (
+          {toggleDisplayMarkers &&
+            lotInfo.map((lot) => (
+              <Marker
+                // key={lot.CarParkID}
+                latitude={Number(lot.Location.split(" ")[0])}
+                longitude={Number(lot.Location.split(" ")[1])}
+              >
+                <button
+                  className="markerButton"
+                  onClick={(event) => {
+                    event.preventDefault();
+                    setSelectedCarpark(lot);
+                  }}
+                >
+                  <img src={carparkImage} alt="Carpark" />
+                </button>
+              </Marker>
+            ))}
+          {/* {lotInfo.map((lot) => (
             <Marker
               // key={lot.CarParkID}
               latitude={Number(lot.Location.split(" ")[0])}
@@ -91,7 +116,7 @@ export function DisplayMap({ lotInfo, coordinates }: IAppProps) {
                 <img src={carparkImage} alt="Carpark" />
               </button>
             </Marker>
-          ))}
+          ))} */}
 
           {selectedCarpark && (
             <Popup
@@ -111,6 +136,7 @@ export function DisplayMap({ lotInfo, coordinates }: IAppProps) {
           )}
         </ReactMapGL>
       </div>
+      <button onClick={handleToggle}>Display Markers</button>
     </>
   );
 }
