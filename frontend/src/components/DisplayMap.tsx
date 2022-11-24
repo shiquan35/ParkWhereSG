@@ -1,6 +1,11 @@
 import * as React from "react";
 // import { Map, useMap } from "react-map-gl";
-import ReactMapGL, { Marker, Popup } from "react-map-gl";
+import ReactMapGL, {
+  Marker,
+  Popup,
+  GeolocateControl,
+  NavigationControl,
+} from "react-map-gl";
 import "mapbox-gl/dist/mapbox-gl.css";
 import carparkImage from "../carpark.png";
 
@@ -19,7 +24,7 @@ export interface IAppProps {
     LotType: string;
   }[];
 
-  coordinates: NumberArray[][];
+  // coordinates: NumberArray[][];
 }
 
 // type LotInfoProps = {
@@ -44,29 +49,31 @@ type LotInfo = {
   LotType: string;
 };
 
-export function DisplayMap({ lotInfo, coordinates }: IAppProps) {
+export function DisplayMap({ lotInfo }: IAppProps) {
   // props.lotInfo.Location
   // console.log(props.lotInfo[0].Location);
   // console.log("lotInfo", lotInfo);
   // console.log("coords", coordinates);
+  const mapRef: any = React.useRef();
 
   const [selectedCarpark, setSelectedCarpark] = React.useState<LotInfo | null>(
     null
   );
+
   const [toggleDisplayMarkers, setToggleDisplayMarkers] =
     React.useState<boolean>(false);
+
+  const [value, setValue] = React.useState<string>("");
 
   const handleToggle = (): void => {
     setToggleDisplayMarkers(!toggleDisplayMarkers);
   };
 
-  console.log("SELECTED", selectedCarpark);
-  console.log("LAT", Number(selectedCarpark?.Location.split(" ")[0]));
   return (
     <>
-      {console.log("Lng", Number(selectedCarpark?.Location.split(" ")[1]))}
       <div className="map">
         <ReactMapGL
+          ref={mapRef}
           style={{
             width: "700px",
             height: "700px",
@@ -100,23 +107,6 @@ export function DisplayMap({ lotInfo, coordinates }: IAppProps) {
                 </button>
               </Marker>
             ))}
-          {/* {lotInfo.map((lot) => (
-            <Marker
-              // key={lot.CarParkID}
-              latitude={Number(lot.Location.split(" ")[0])}
-              longitude={Number(lot.Location.split(" ")[1])}
-            >
-              <button
-                className="markerButton"
-                onClick={(event) => {
-                  event.preventDefault();
-                  setSelectedCarpark(lot);
-                }}
-              >
-                <img src={carparkImage} alt="Carpark" />
-              </button>
-            </Marker>
-          ))} */}
 
           {selectedCarpark && (
             <Popup
@@ -134,6 +124,11 @@ export function DisplayMap({ lotInfo, coordinates }: IAppProps) {
               <button>TEST BUTTON</button>
             </Popup>
           )}
+          <GeolocateControl
+            positionOptions={{ enableHighAccuracy: true }}
+            showAccuracyCircle={false}
+          />
+          <NavigationControl />
         </ReactMapGL>
       </div>
       <button onClick={handleToggle}>Display Markers</button>

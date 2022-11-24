@@ -14,15 +14,8 @@ type CarparkDetails = {
   LotType: string;
 };
 
-type CoordDetails = {
-  Location: string;
-};
-
-type NumberArray = number[];
-
 const ApiCall = () => {
   const [ltaCarparkAvail, setLtaCarparkAvail] = useState<CarparkDetails[]>([]);
-  const [coordinates, setCoordinates] = useState<NumberArray[][]>([]);
 
   useEffect(() => {
     axios
@@ -48,27 +41,6 @@ const ApiCall = () => {
     }
   );
 
-  useEffect(() => {
-    // 1. 2D array for coordinates
-    const coordinatesMap = ltaCarparkAvail.map(
-      (lots: CoordDetails, i: number) => {
-        let oneCarparkCoord: NumberArray = [];
-        let allCarparkCoord: NumberArray[] = [];
-        const oneCoord = lots.Location.split(" ");
-        const oneLat = Number(oneCoord[0]);
-        const oneLng = Number(oneCoord[1]);
-
-        // oneCarparkCoord.push([oneLat, oneLng]);
-        oneCarparkCoord.push(oneLat);
-        oneCarparkCoord.push(oneLng);
-        return (allCarparkCoord = [...allCarparkCoord, oneCarparkCoord]);
-        // setCoordinates(allCarparkCoord);
-      }
-    );
-    // console.log(coordinatesMap);
-    setCoordinates(coordinatesMap);
-  }, [ltaCarparkAvail]);
-
   return (
     <>
       {/* <div>{lotAvailability}</div> */}
@@ -78,7 +50,7 @@ const ApiCall = () => {
         <br />
         Zero lot availability could be due to missing data.
       </h6>
-      {<DisplayMap lotInfo={ltaCarparkAvail} coordinates={coordinates} />}
+      {<DisplayMap lotInfo={ltaCarparkAvail} />}
     </>
   );
 };
