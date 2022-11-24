@@ -10,6 +10,8 @@ import "mapbox-gl/dist/mapbox-gl.css";
 import carparkImage from "../carpark.png";
 
 const TOKEN = process.env.MAPBOX_TOKEN; // doesnt work
+const mapboxToken =
+  "pk.eyJ1IjoiYW5uYXNxIiwiYSI6ImNsYWh5Y3k5ZDA5cDAzdmxma3pjNHBud2UifQ.N58yLSvFXR8Szwg5Zw4cag";
 
 type NumberArray = number[];
 
@@ -49,12 +51,48 @@ type LotInfo = {
   LotType: string;
 };
 
+type ViewState = {
+  longitude: number;
+  latitude: number;
+  zoom: number;
+};
+
 export function DisplayMap({ lotInfo }: IAppProps) {
   // props.lotInfo.Location
   // console.log(props.lotInfo[0].Location);
-  // console.log("lotInfo", lotInfo);
+  console.log("lotInfo", lotInfo);
   // console.log("coords", coordinates);
   const mapRef: any = React.useRef();
+
+  const [viewState, setViewState] = React.useState<ViewState>({
+    longitude: 103.8198,
+    latitude: 1.3521,
+    zoom: 10,
+  });
+
+  const options: { enableHighAccuracy: boolean; timeout: number } = {
+    enableHighAccuracy: true,
+    timeout: 5000,
+  };
+
+  const success = (pos: any): void => {
+    // console.log(pos);
+
+    const crd = pos.coords;
+    setViewState({
+      longitude: crd.longitude,
+      latitude: crd.latitude,
+      zoom: 16,
+    });
+  };
+
+  const error = (err: any): void => {
+    console.warn(`ERROR(${err.code}): ${err.message}`);
+  };
+
+  React.useEffect(() => {
+    navigator.geolocation.getCurrentPosition(success, error, options);
+  }, []);
 
   const [selectedCarpark, setSelectedCarpark] = React.useState<LotInfo | null>(
     null
@@ -62,8 +100,6 @@ export function DisplayMap({ lotInfo }: IAppProps) {
 
   const [toggleDisplayMarkers, setToggleDisplayMarkers] =
     React.useState<boolean>(false);
-
-  const [value, setValue] = React.useState<string>("");
 
   const handleToggle = (): void => {
     setToggleDisplayMarkers(!toggleDisplayMarkers);
@@ -79,14 +115,16 @@ export function DisplayMap({ lotInfo }: IAppProps) {
             height: "700px",
             border: "2px solid black",
           }}
-          // ideally start at current user location
-          initialViewState={{
-            longitude: 103.8198,
-            latitude: 1.3521,
-            zoom: 10,
-          }}
+          {...viewState}
+          onMove={(event) => setViewState(event.viewState)}
+          // initialViewState={{
+          //   longitude: 103.8198,
+          //   latitude: 1.3521,
+          //   zoom: 10,
+          // }}
+
           // mapboxAccessToken={TOKEN}
-          mapboxAccessToken="pk.eyJ1IjoiYW5uYXNxIiwiYSI6ImNsYWh5Y3k5ZDA5cDAzdmxma3pjNHBud2UifQ.N58yLSvFXR8Szwg5Zw4cag"
+          mapboxAccessToken={mapboxToken}
           mapStyle="mapbox://styles/mapbox/streets-v9"
         >
           {toggleDisplayMarkers &&
