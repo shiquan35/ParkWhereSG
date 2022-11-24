@@ -12,7 +12,3 @@ app.use("/", lta.carparkAvail);
 app.listen(PORT, () => {
   console.log(`Express app listening on port ${PORT}!`);
 });
-
-app.listen(PORT, () => {
-  console.log(`Express app listening on port ${PORT}!`);
-});

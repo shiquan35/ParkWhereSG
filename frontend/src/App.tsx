@@ -1,20 +1,22 @@
-import LtaCall from "./components/apiCall/LtaCall";
-import { ForgotPassword } from "./components/authentication/ForgotPassword";
-import Login from "./components/authentication/Login";
-import Logout from "./components/authentication/Logout";
-import SignUp from "./components/authentication/SignUp";
 import { AuthProvider } from "./components/firebaseContext/FirebaseContext";
+import { Routes, Route } from "react-router-dom";
+import Map from "./components/pages/Map";
+import Login from "./components/authentication/Login";
+import SignUp from "./components/authentication/SignUp";
+import { ForgotPassword } from "./components/authentication/ForgotPassword";
+import Avail from "./components/Lta";
 
 function App() {
   return (
     <>
       <AuthProvider>
-        <div>Hello</div>
-        {/* <LtaCall /> */}
-        <Login />
-        <SignUp />
-        <Logout />
-        <ForgotPassword />
+        <Routes>
+          <Route path="/" element={<Avail />} />
+          <Route path="/map" element={<Map />} />
+          <Route path="/login" element={<Login />} />
+          <Route path="/signup" element={<SignUp />} />
+          <Route path="/passwordReset" element={<ForgotPassword />} />
+        </Routes>
       </AuthProvider>
     </>
   );
