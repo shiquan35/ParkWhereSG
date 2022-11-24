@@ -1,6 +1,7 @@
 import { useState, useRef } from "react";
 import { IconX, IconCheck } from "@tabler/icons";
 import {
+  Container,
   PasswordInput,
   Progress,
   Text,
@@ -87,7 +88,7 @@ export const ForgotPassword = () => {
   };
 
   return (
-    <div style={{ maxWidth: 340, margin: "auto" }}>
+    <Container sx={{ maxWidth: 500 }} mx="auto">
       <Popover
         opened={popoverOpened}
         position="bottom"
@@ -138,6 +139,6 @@ export const ForgotPassword = () => {
           {checks}
         </Popover.Dropdown>
       </Popover>
-    </div>
+    </Container>
   );
 };

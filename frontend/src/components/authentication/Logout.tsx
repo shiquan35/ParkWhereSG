@@ -1,6 +1,6 @@
 import { useAuth } from "../firebaseContext/FirebaseContext";
 import { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, Link } from "react-router-dom";
 import { Alert, Button, Container } from "@mantine/core";
 
 const Logout = () => {
@@ -27,7 +27,11 @@ const Logout = () => {
           {error}
         </Alert>
       )}
+      <h3>Are you sure you wish to logout?</h3>
       <Button onClick={handleClick}>Log out</Button>
+      <Button>
+        <Link to="/">Cancel</Link>
+      </Button>
     </Container>
   );
 };

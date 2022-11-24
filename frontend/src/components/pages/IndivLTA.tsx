@@ -1,5 +1,3 @@
-import * as React from "react";
-
 export interface lots {}
 
 export function IndivLTA(props: any) {
