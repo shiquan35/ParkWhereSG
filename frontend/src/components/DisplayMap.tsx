@@ -84,6 +84,8 @@ export function DisplayMap({ lotInfo }: IAppProps) {
       latitude: crd.latitude,
       zoom: 16,
     });
+    console.log("current lat", crd.latitude);
+    console.log("current lng", crd.longitude);
   };
 
   const error = (err: any): void => {
@@ -104,6 +106,11 @@ export function DisplayMap({ lotInfo }: IAppProps) {
   const handleToggle = (): void => {
     setToggleDisplayMarkers(!toggleDisplayMarkers);
   };
+
+  selectedCarpark &&
+    console.log("selected lat", Number(selectedCarpark.Location.split(" ")[0]));
+  selectedCarpark &&
+    console.log("selected lng", Number(selectedCarpark.Location.split(" ")[1]));
 
   return (
     <>
@@ -128,23 +135,32 @@ export function DisplayMap({ lotInfo }: IAppProps) {
           mapStyle="mapbox://styles/mapbox/streets-v9"
         >
           {toggleDisplayMarkers &&
-            lotInfo.map((lot) => (
-              <Marker
-                // key={lot.CarParkID}
-                latitude={Number(lot.Location.split(" ")[0])}
-                longitude={Number(lot.Location.split(" ")[1])}
-              >
-                <button
-                  className="markerButton"
-                  onClick={(event) => {
-                    event.preventDefault();
-                    setSelectedCarpark(lot);
-                  }}
-                >
-                  <img src={carparkImage} alt="Carpark" />
-                </button>
-              </Marker>
-            ))}
+            lotInfo.map(
+              (lot) =>
+                Math.sqrt(
+                  (viewState.latitude - Number(lot.Location.split(" ")[0])) **
+                    2 +
+                    (viewState.longitude -
+                      Number(lot.Location.split(" ")[1])) **
+                      2
+                ) <= 0.005 && (
+                  <Marker
+                    // key={lot.CarParkID}
+                    latitude={Number(lot.Location.split(" ")[0])}
+                    longitude={Number(lot.Location.split(" ")[1])}
+                  >
+                    <button
+                      className="markerButton"
+                      onClick={(event) => {
+                        event.preventDefault();
+                        setSelectedCarpark(lot);
+                      }}
+                    >
+                      <img src={carparkImage} alt="Carpark" />
+                    </button>
+                  </Marker>
+                )
+            )}
 
           {selectedCarpark && (
             <Popup
