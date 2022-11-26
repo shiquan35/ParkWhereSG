@@ -1,9 +1,20 @@
-import { useEffect, useState } from "react";
+import { useState, useEffect } from "react";
 import axios from "axios";
-import { IndivLTA } from "./IndivLTA";
+import { DisplayMap } from "./DisplayMap";
+import "./MarkerStyles/markerStyles.css";
 
-const Avail = () => {
-  const [ltaCarparkAvail, setLtaCarparkAvail] = useState([]);
+type CarparkDetails = {
+  Agency: string;
+  Area: string;
+  AvailableLots: number;
+  CarParkID: string;
+  Development: string;
+  Location: string;
+  LotType: string;
+};
+
+const Homepage = () => {
+  const [ltaCarparkAvail, setLtaCarparkAvail] = useState<CarparkDetails[]>([]);
 
   useEffect(() => {
     axios
@@ -12,12 +23,17 @@ const Avail = () => {
       .catch((err) => console.log(err));
   }, []);
 
-  console.log(ltaCarparkAvail);
-  const lotAvailability = ltaCarparkAvail.map((lots, i) => {
-    return <IndivLTA lots={lots} key={i + 1} />;
-  });
-
-  return <div>{lotAvailability}</div>;
+  return (
+    <>
+      <h1>Main Page</h1>
+      <h6>
+        Disclaimer: Limited to data provided by LTA Datamall.
+        <br />
+        Zero lot availability could be due to missing data.
+      </h6>
+      {<DisplayMap lotInfo={ltaCarparkAvail} />}
+    </>
+  );
 };
 
-export default Avail;
+export default Homepage;

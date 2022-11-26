@@ -104,7 +104,7 @@ const Login = () => {
 
       <Flex>
         <h4>
-          Don't have an account? <Link to="/">Sign Up!</Link>
+          Don't have an account? <Link to="/signup">Sign Up!</Link>
         </h4>
       </Flex>
     </Container>
