@@ -1,4 +1,5 @@
 import * as React from "react";
+import { v4 as uuid } from "uuid";
 import ReactMapGL, {
   Marker,
   Popup,
@@ -114,6 +115,7 @@ export function DisplayMap({ lotInfo }: IAppProps) {
                       2
                 ) <= 0.005 && (
                   <Marker
+                    key={uuid()}
                     latitude={Number(lot.Location.split(" ")[0])}
                     longitude={Number(lot.Location.split(" ")[1])}
                   >
