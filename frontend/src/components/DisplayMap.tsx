@@ -9,7 +9,8 @@ import ReactMapGL, {
 import "mapbox-gl/dist/mapbox-gl.css";
 import carparkImage from "../carpark.png";
 
-const TOKEN = process.env.MAPBOX_TOKEN; // doesnt work
+// const TOKEN = process.env.REACT_APP_MAPBOX_TOKEN; // doesnt work
+// console.log(TOKEN);
 const mapboxToken =
   "pk.eyJ1IjoiYW5uYXNxIiwiYSI6ImNsYWh5Y3k5ZDA5cDAzdmxma3pjNHBud2UifQ.N58yLSvFXR8Szwg5Zw4cag";
 
