@@ -1,10 +1,10 @@
 import { AuthProvider } from "./components/firebaseContext/FirebaseContext";
 import { Routes, Route } from "react-router-dom";
-import Map from "./components/pages/Map";
+import List from "./components/pages/List";
 import Login from "./components/authentication/Login";
 import SignUp from "./components/authentication/SignUp";
 import { ForgotPassword } from "./components/authentication/ForgotPassword";
-import Avail from "./components/pages/Lta";
+import Homepage from "./components/pages/Lta";
 import Dashboard from "./components/pages/Dashboard";
 import Logout from "./components/authentication/Logout";
 import DoesNotExist from "./components/pages/DoesNotExist";
@@ -19,7 +19,7 @@ function App() {
             path="/"
             element={
               <Layout>
-                <Avail />
+                <Homepage />
               </Layout>
             }
           />
@@ -28,7 +28,7 @@ function App() {
             path="/map"
             element={
               <Layout>
-                <Map />
+                <Homepage />
               </Layout>
             }
           />
@@ -36,7 +36,7 @@ function App() {
             path="/list"
             element={
               <Layout>
-                <Avail />
+                <List />
               </Layout>
             }
           />
