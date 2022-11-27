@@ -1,15 +1,66 @@
-import React from "react";
-import "./App.css";
-import { Routes, Route, Link } from "react-router-dom";
-import ApiCall from "./components/ApiCall";
+import { AuthProvider } from "./components/firebaseContext/FirebaseContext";
+import { Routes, Route } from "react-router-dom";
+// import List from "./components/pages/List";
+import Login from "./components/authentication/Login";
+import SignUp from "./components/authentication/SignUp";
+import { ForgotPassword } from "./components/authentication/ForgotPassword";
+import Homepage from "./components/pages/Lta";
+import Dashboard from "./components/pages/Dashboard";
+import Logout from "./components/authentication/Logout";
+import DoesNotExist from "./components/pages/DoesNotExist";
+import Layout from "./components/sidebar/Layout";
 
 function App() {
   return (
     <>
-      <Routes>
-        <Route path="/" element={<ApiCall />} />
-        {/* <Route path="/map" element={<DisplayMap />} /> */}
-      </Routes>
+      <AuthProvider>
+        <Routes>
+          <Route
+            path="/"
+            element={
+              <Layout>
+                <Homepage />
+              </Layout>
+            }
+          />
+          <Route path="*" element={<DoesNotExist />} />
+          <Route
+            path="/map"
+            element={
+              <Layout>
+                <Homepage />
+              </Layout>
+            }
+          />
+          <Route path="/list" element={<Layout>{/* <List /> */}</Layout>} />
+          <Route path="/login" element={<Login />} />
+          <Route
+            path="/logout"
+            element={
+              <Layout>
+                <Logout />
+              </Layout>
+            }
+          />
+          <Route path="/signup" element={<SignUp />} />
+          <Route
+            path="/dashboard"
+            element={
+              <Layout>
+                <Dashboard />
+              </Layout>
+            }
+          />
+          <Route
+            path="/passwordReset"
+            element={
+              <Layout>
+                <ForgotPassword />
+              </Layout>
+            }
+          />
+        </Routes>
+      </AuthProvider>
     </>
   );
 }
