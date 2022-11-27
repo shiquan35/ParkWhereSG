@@ -7,8 +7,8 @@ import ReactMapGL, {
 } from "react-map-gl";
 import "mapbox-gl/dist/mapbox-gl.css";
 import carparkMarker from "./MarkerStyles/carparkMarker.png";
-import { v4 as uuid } from "uuid";
 import GeocoderControl from "./GeocoderFiles/geocoder-control";
+import { v4 as uuid } from "uuid";
 import { List } from "./List";
 
 const TOKEN = process.env.REACT_APP_MAPBOX_TOKEN;
@@ -28,7 +28,7 @@ export interface IAppProps {
     longitude: number;
     latitude: number;
     zoom: number;
-  };
+  }
 }
 
 type LotInfo = {
