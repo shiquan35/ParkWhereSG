@@ -28,7 +28,7 @@ export default function GeocoderControl(props: GeocoderControlProps) {
         ...props,
         marker: false,
         // zoom: props.zoom,
-        zoom: 10,
+        zoom: 16,
         accessToken: props.mapboxAccessToken,
       });
       ctrl.on("loading", props.onLoading);

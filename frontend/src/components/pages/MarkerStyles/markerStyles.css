@@ -54,17 +54,38 @@
 */
 
 /* <ul> */
-.suggestions {
+
+.suggestions-wrapper {
+  /* display: flex;
+  flex-direction: column;
+  justify-content: space-between; */
+  background-color: black;
 }
 
-/*  <li> */
-.active {
+.suggestions {
+  min-width: 200px;
+  list-style-type: none;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  background-color: grey;
+}
+
+.mapboxgl-ctrl-geocoder--suggestion {
+  background-color: yellow;
+  margin-left: 0px;
 }
 
 /* Bedok Reservoir Road Market & Food Centre */
 .mapboxgl-ctrl-geocoder--suggestion-title {
+  font-size: small;
+  font-weight: bold;
+  margin: 0px 0px 0px 0px;
+  /* background-color: brown; */
 }
 
 /* 630 Bedok Reservoir Road, Singapore, North East Community Development Council 470630 */
 .mapboxgl-ctrl-geocoder--suggestion-address {
+  margin: 0px 10px 5px 0px;
+  /* background-color: blue; */
 }
