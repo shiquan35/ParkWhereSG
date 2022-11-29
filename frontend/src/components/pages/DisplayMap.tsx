@@ -90,7 +90,8 @@ export function DisplayMap({ lotInfo, currLocation }: IAppProps) {
                     (viewState.longitude -
                       Number(lot.Location.split(" ")[1])) **
                       2
-                ) <= 0.0035 && (
+                ) <= 0.0035 &&
+                lot.LotType === "C" && (
                   <Marker
                     key={uuid()}
                     latitude={Number(lot.Location.split(" ")[0])}
@@ -98,7 +99,7 @@ export function DisplayMap({ lotInfo, currLocation }: IAppProps) {
                   >
                     <button
                       className="markerButton"
-                      onMouseOver={(event) => {
+                      onClick={(event) => {
                         event.preventDefault();
                         setSelectedCarpark(lot);
                       }}
@@ -117,7 +118,7 @@ export function DisplayMap({ lotInfo, currLocation }: IAppProps) {
                 onClose={() => setSelectedCarpark(null)}
               >
                 <div
-                  onMouseOut={(event) => {
+                  onClick={(event) => {
                     event.preventDefault();
                     setSelectedCarpark(null);
                   }}

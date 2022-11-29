@@ -25,7 +25,8 @@ export function List({ lotInfo, viewState }: IAppProps) {
       Math.sqrt(
         (viewState.latitude - Number(lot.Location.split(" ")[0])) ** 2 +
           (viewState.longitude - Number(lot.Location.split(" ")[1])) ** 2
-      ) <= 0.0035
+      ) <= 0.0035 &&
+      lot.LotType === "C"
     ) {
       return (
         <>
