@@ -1,6 +1,6 @@
 import { AuthProvider } from "./components/firebaseContext/FirebaseContext";
 import { Routes, Route } from "react-router-dom";
-import List from "./components/pages/List";
+// import List from "./components/pages/List";
 import Login from "./components/authentication/Login";
 import SignUp from "./components/authentication/SignUp";
 import { ForgotPassword } from "./components/authentication/ForgotPassword";
@@ -32,14 +32,7 @@ function App() {
               </Layout>
             }
           />
-          <Route
-            path="/list"
-            element={
-              <Layout>
-                <List />
-              </Layout>
-            }
-          />
+          <Route path="/list" element={<Layout>{/* <List /> */}</Layout>} />
           <Route path="/login" element={<Login />} />
           <Route
             path="/logout"

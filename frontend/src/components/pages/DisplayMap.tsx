@@ -7,6 +7,9 @@ import ReactMapGL, {
 } from "react-map-gl";
 import "mapbox-gl/dist/mapbox-gl.css";
 import carparkMarker from "./MarkerStyles/carparkMarker.png";
+import GeocoderControl from "./GeocoderFiles/geocoder-control";
+import { v4 as uuid } from "uuid";
+import { List } from "./List";
 
 const TOKEN = process.env.REACT_APP_MAPBOX_TOKEN;
 
@@ -20,6 +23,12 @@ export interface IAppProps {
     Location: string;
     LotType: string;
   }[];
+
+  currLocation: {
+    longitude: number;
+    latitude: number;
+    zoom: number;
+  };
 }
 
 type LotInfo = {
@@ -38,50 +47,19 @@ type ViewState = {
   zoom: number;
 };
 
-export function DisplayMap({ lotInfo }: IAppProps) {
+export function DisplayMap({ lotInfo, currLocation }: IAppProps) {
   const mapRef: any = React.useRef();
-  console.log("lotInfo", lotInfo);
+  // console.log("lotInfo", lotInfo);
 
   const [viewState, setViewState] = React.useState<ViewState>({
-    longitude: 103.8198,
-    latitude: 1.3521,
-    zoom: 10,
+    longitude: currLocation.longitude,
+    latitude: currLocation.latitude,
+    zoom: currLocation.zoom,
   });
-
-  const options: { enableHighAccuracy: boolean; timeout: number } = {
-    enableHighAccuracy: true,
-    timeout: 5000,
-  };
-
-  const success = (pos: any): void => {
-    const crd = pos.coords;
-    setViewState({
-      longitude: crd.longitude,
-      latitude: crd.latitude,
-      zoom: 16,
-    });
-    console.log("current lat", crd.latitude);
-    console.log("current lng", crd.longitude);
-  };
-
-  const error = (err: any): void => {
-    console.warn(`ERROR(${err.code}): ${err.message}`);
-  };
-
-  React.useEffect(() => {
-    navigator.geolocation.getCurrentPosition(success, error, options);
-  }, []);
 
   const [selectedCarpark, setSelectedCarpark] = React.useState<LotInfo | null>(
     null
   );
-
-  const [toggleDisplayMarkers, setToggleDisplayMarkers] =
-    React.useState<boolean>(false);
-
-  const handleToggle = (): void => {
-    setToggleDisplayMarkers(!toggleDisplayMarkers);
-  };
 
   selectedCarpark &&
     console.log("selected lat", Number(selectedCarpark.Location.split(" ")[0]));
@@ -90,21 +68,21 @@ export function DisplayMap({ lotInfo }: IAppProps) {
 
   return (
     <>
-      <div className="map">
-        <ReactMapGL
-          ref={mapRef}
-          style={{
-            width: "700px",
-            height: "700px",
-            border: "2px solid black",
-          }}
-          {...viewState}
-          onMove={(event) => setViewState(event.viewState)}
-          mapboxAccessToken={TOKEN}
-          mapStyle="mapbox://styles/mapbox/streets-v9"
-        >
-          {toggleDisplayMarkers &&
-            lotInfo.map(
+      <div className="container">
+        <div className="map">
+          <ReactMapGL
+            ref={mapRef}
+            style={{
+              width: "700px",
+              height: "700px",
+              border: "2px solid black",
+            }}
+            {...viewState}
+            onMove={(event) => setViewState(event.viewState)}
+            mapboxAccessToken={TOKEN}
+            mapStyle="mapbox://styles/mapbox/streets-v9"
+          >
+            {lotInfo.map(
               (lot) =>
                 Math.sqrt(
                   (viewState.latitude - Number(lot.Location.split(" ")[0])) **
@@ -112,8 +90,10 @@ export function DisplayMap({ lotInfo }: IAppProps) {
                     (viewState.longitude -
                       Number(lot.Location.split(" ")[1])) **
                       2
-                ) <= 0.005 && (
+                ) <= 0.0035 &&
+                lot.LotType === "C" && (
                   <Marker
+                    key={uuid()}
                     latitude={Number(lot.Location.split(" ")[0])}
                     longitude={Number(lot.Location.split(" ")[1])}
                   >
@@ -130,28 +110,41 @@ export function DisplayMap({ lotInfo }: IAppProps) {
                 )
             )}
 
-          {selectedCarpark && (
-            <Popup
-              longitude={Number(selectedCarpark.Location.split(" ")[1])}
-              latitude={Number(selectedCarpark.Location.split(" ")[0])}
-              closeOnClick={false}
-              onClose={() => setSelectedCarpark(null)}
-            >
-              <div>
-                <h2>{selectedCarpark.Development}</h2>
-                <h2>Lots available: {selectedCarpark.AvailableLots}</h2>
-              </div>
-              <button>TEST BUTTON</button>
-            </Popup>
-          )}
-          <GeolocateControl
-            positionOptions={{ enableHighAccuracy: true }}
-            showAccuracyCircle={false}
-          />
-          <NavigationControl />
-        </ReactMapGL>
+            {selectedCarpark && (
+              <Popup
+                longitude={Number(selectedCarpark.Location.split(" ")[1])}
+                latitude={Number(selectedCarpark.Location.split(" ")[0])}
+                closeOnClick={false}
+                onClose={() => setSelectedCarpark(null)}
+              >
+                <div
+                  onClick={(event) => {
+                    event.preventDefault();
+                    setSelectedCarpark(null);
+                  }}
+                >
+                  <h2>{selectedCarpark.Development}</h2>
+                  <h2>Lots available: {selectedCarpark.AvailableLots}</h2>
+                </div>
+                <button>TEST BUTTON</button>
+              </Popup>
+            )}
+            <GeolocateControl
+              positionOptions={{ enableHighAccuracy: true }}
+              showAccuracyCircle={false}
+            />
+            <NavigationControl />
+            <GeocoderControl
+              position="top-left"
+              mapboxAccessToken={TOKEN}
+              zoom={16}
+            />
+          </ReactMapGL>
+        </div>
+        <div className="listDiv">
+          <List lotInfo={lotInfo} viewState={viewState} />
+        </div>
       </div>
-      <button onClick={handleToggle}>Display Markers</button>
     </>
   );
 }

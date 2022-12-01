@@ -13,8 +13,44 @@ type CarparkDetails = {
   LotType: string;
 };
 
+type CurrentLocation = {
+  longitude: number;
+  latitude: number;
+  zoom: number;
+};
+
 const Homepage = () => {
   const [ltaCarparkAvail, setLtaCarparkAvail] = useState<CarparkDetails[]>([]);
+
+  const [currentLocation, setCurrentLocation] = useState<CurrentLocation>(
+    null!
+  );
+
+  // null!
+
+  const success = (pos: any): void => {
+    const crd = pos.coords;
+    setCurrentLocation({
+      longitude: crd.longitude,
+      latitude: crd.latitude,
+      zoom: 16,
+    });
+    console.log("current lat", crd.latitude);
+    console.log("current lng", crd.longitude);
+  };
+
+  const error = (err: any): void => {
+    console.warn(`ERROR(${err.code}): ${err.message}`);
+  };
+
+  const options: { enableHighAccuracy: boolean; timeout: number } = {
+    enableHighAccuracy: true,
+    timeout: 5000,
+  };
+
+  useEffect(() => {
+    navigator.geolocation.getCurrentPosition(success, error, options);
+  }, []);
 
   useEffect(() => {
     axios
@@ -22,6 +58,8 @@ const Homepage = () => {
       .then((res) => setLtaCarparkAvail(res.data))
       .catch((err) => console.log(err));
   }, []);
+
+  console.log("current location", currentLocation);
 
   return (
     <>
@@ -31,7 +69,9 @@ const Homepage = () => {
         <br />
         Zero lot availability could be due to missing data.
       </h6>
-      {<DisplayMap lotInfo={ltaCarparkAvail} />}
+      {currentLocation && (
+        <DisplayMap lotInfo={ltaCarparkAvail} currLocation={currentLocation} />
+      )}
     </>
   );
 };
