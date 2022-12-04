@@ -1,3 +1,5 @@
+// NOT USED!!!
+
 import * as React from "react";
 // import { Map, useMap } from "react-map-gl";
 import ReactMapGL, {
@@ -59,8 +61,7 @@ type ViewState = {
 };
 
 export function DisplayMap({ lotInfo }: IAppProps) {
-  // props.lotInfo.Location
-  // console.log(props.lotInfo[0].Location);
+  console.log("sidebar folder display map");
   console.log("lotInfo", lotInfo);
   // console.log("coords", coordinates);
   const mapRef: any = React.useRef();

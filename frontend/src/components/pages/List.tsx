@@ -35,6 +35,7 @@ export function List({ lotInfo, viewState }: IAppProps) {
             {<br />}
             Lots Available: {lot.AvailableLots}
             {<br />}
+            {<br />}
           </li>
         </>
       );

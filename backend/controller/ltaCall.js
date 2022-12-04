@@ -32,7 +32,6 @@ const carparkAvail = async (req, res) => {
           ...data4.data.value,
           ...data5.data.value,
         ];
-        console.log(allInfo);
       })
     )
     .catch((err) => console.log(err));

@@ -57,7 +57,6 @@ const SignUp = () => {
     try {
       setError("");
       setLoading(true);
-      //what does "!" mean?
       await signup(emailRef.current.value, passwordRef.current.value);
       navigate("/dashboard", { replace: true });
     } catch {
@@ -88,7 +87,6 @@ const SignUp = () => {
           <Stack sx={{ maxWidth: 380, marginTop: 10 }} mx="auto">
             <PasswordInput
               description="Password must include at least one letter, number and special character"
-              // validation of password required here.
               label="Password"
               visible={visible}
               onVisibilityChange={toggle}

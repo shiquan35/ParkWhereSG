@@ -26,8 +26,6 @@ const Homepage = () => {
     null!
   );
 
-  // null!
-
   const success = (pos: any): void => {
     const crd = pos.coords;
     setCurrentLocation({

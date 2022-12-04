@@ -10,6 +10,10 @@ import carparkMarker from "./MarkerStyles/carparkMarker.png";
 import GeocoderControl from "./GeocoderFiles/geocoder-control";
 import { v4 as uuid } from "uuid";
 import { List } from "./List";
+import { addDoc } from "firebase/firestore";
+import { db } from "../../Firebase";
+import { collection } from "firebase/firestore";
+import { useAuth } from "../firebaseContext/FirebaseContext";
 
 const TOKEN = process.env.REACT_APP_MAPBOX_TOKEN;
 
@@ -49,7 +53,7 @@ type ViewState = {
 
 export function DisplayMap({ lotInfo, currLocation }: IAppProps) {
   const mapRef: any = React.useRef();
-  // console.log("lotInfo", lotInfo);
+  console.log("pages folder display map");
 
   const [viewState, setViewState] = React.useState<ViewState>({
     longitude: currLocation.longitude,
@@ -60,6 +64,19 @@ export function DisplayMap({ lotInfo, currLocation }: IAppProps) {
   const [selectedCarpark, setSelectedCarpark] = React.useState<LotInfo | null>(
     null
   );
+
+  const savedCollectionRef = collection(db, "favourites");
+  const { user } = useAuth();
+  const createUser = async () => {
+    await addDoc(savedCollectionRef, {
+      carparkID: selectedCarpark?.CarParkID,
+      userID: user?.email,
+    });
+  };
+
+  const handleClick = (e: React.MouseEvent) => {
+    createUser();
+  };
 
   selectedCarpark &&
     console.log("selected lat", Number(selectedCarpark.Location.split(" ")[0]));
@@ -126,7 +143,7 @@ export function DisplayMap({ lotInfo, currLocation }: IAppProps) {
                   <h2>{selectedCarpark.Development}</h2>
                   <h2>Lots available: {selectedCarpark.AvailableLots}</h2>
                 </div>
-                <button>TEST BUTTON</button>
+                <button onClick={handleClick}>Add to favourite</button>
               </Popup>
             )}
             <GeolocateControl
