@@ -53,7 +53,7 @@ type ViewState = {
 
 export function DisplayMap({ lotInfo, currLocation }: IAppProps) {
   const mapRef: any = React.useRef();
-  // console.log("lotInfo", lotInfo);
+  console.log("pages folder display map");
 
   const [viewState, setViewState] = React.useState<ViewState>({
     longitude: currLocation.longitude,

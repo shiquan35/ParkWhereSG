@@ -2,7 +2,7 @@ import { useState } from "react";
 import { createStyles, Navbar, Group, Code, Text } from "@mantine/core";
 import {
   IconMap,
-  IconList,
+  IconCoin,
   IconHome,
   IconPassword,
   IconLogout,
@@ -12,7 +12,7 @@ import { Link } from "react-router-dom";
 import { useAuth } from "../firebaseContext/FirebaseContext";
 
 const useStyles = createStyles((theme, _params, getRef) => {
-  const icon = getRef("icon");
+  const icon: string = getRef("icon");
   return {
     header: {
       paddingBottom: theme.spacing.md,
@@ -91,7 +91,7 @@ const useStyles = createStyles((theme, _params, getRef) => {
 
 const data = [
   { link: "/map", label: "Map View", icon: IconMap },
-  { link: "/list", label: "List view", icon: IconList },
+  { link: "/carparkRates", label: "Carpark Rates", icon: IconCoin },
 ];
 
 export function Navigationbar() {

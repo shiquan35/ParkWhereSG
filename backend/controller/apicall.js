@@ -3,11 +3,11 @@ require("dotenv").config();
 const token = process.env.TOKEN;
 
 let apiCalls = [
-  "http://datamall2.mytransport.sg/ltaodataservice/CarParkAvailabilityv2",
-  "http://datamall2.mytransport.sg/ltaodataservice/CarParkAvailabilityv2?$skip=500",
-  "http://datamall2.mytransport.sg/ltaodataservice/CarParkAvailabilityv2?$skip=1000",
-  "http://datamall2.mytransport.sg/ltaodataservice/CarParkAvailabilityv2?$skip=1500",
-  "http://datamall2.mytransport.sg/ltaodataservice/CarParkAvailabilityv2?$skip=2000",
+  "https://data.gov.sg/api/action/datastore_search?resource_id=139a3035-e624-4f56-b63f-89ae28d4ae4c",
+  "https://data.gov.sg/api/action/datastore_search?offset=100&resource_id=139a3035-e624-4f56-b63f-89ae28d4ae4c",
+  "https://data.gov.sg/api/action/datastore_search?offset=200&resource_id=139a3035-e624-4f56-b63f-89ae28d4ae4c",
+  "https://data.gov.sg/api/action/datastore_search?offset=300&resource_id=139a3035-e624-4f56-b63f-89ae28d4ae4c",
+  "https://data.gov.sg/api/action/datastore_search?offset=400&resource_id=139a3035-e624-4f56-b63f-89ae28d4ae4c",
 ];
 
 const carparkAvail = async (req, res) => {

@@ -1,10 +1,39 @@
 import { useState, useEffect } from "react";
 import axios from "axios";
+import { v4 as uuid } from "uuid";
 import { Button, Container } from "@mantine/core";
-import { Link, useRevalidator } from "react-router-dom";
+import { Link } from "react-router-dom";
 import { db } from "../../Firebase";
 import { collection, getDocs } from "firebase/firestore";
 import { useAuth } from "../firebaseContext/FirebaseContext";
+import { createStyles, Table, ScrollArea } from "@mantine/core";
+
+const useStyles = createStyles((theme) => ({
+  header: {
+    position: "sticky",
+    top: 0,
+    backgroundColor:
+      theme.colorScheme === "dark" ? theme.colors.dark[7] : theme.white,
+    transition: "box-shadow 150ms ease",
+
+    "&::after": {
+      content: '""',
+      position: "absolute",
+      left: 0,
+      right: 0,
+      bottom: 0,
+      borderBottom: `1px solid ${
+        theme.colorScheme === "dark"
+          ? theme.colors.dark[3]
+          : theme.colors.gray[2]
+      }`,
+    },
+  },
+
+  scrolled: {
+    boxShadow: theme.shadows.sm,
+  },
+}));
 
 type SavedInfo = {
   userID: string;
@@ -22,10 +51,13 @@ type CarparkDetails = {
 };
 
 const Dashboard = () => {
+  const { classes, cx } = useStyles();
+  const [scrolled, setScrolled] = useState(false);
   const [saved, setSaved] = useState<SavedInfo[]>([]);
   const [ltaCarparkAvail, setLtaCarparkAvail] = useState<CarparkDetails[]>([]);
   const savedCollectionRef = collection(db, "favourites");
   const { user } = useAuth();
+  const userSavedCarparks: string[] = [];
 
   useEffect(() => {
     axios
@@ -37,48 +69,52 @@ const Dashboard = () => {
   useEffect(() => {
     const getSaved = async () => {
       const data = await getDocs(savedCollectionRef);
-      console.log(data.docs);
       setSaved(data.docs.map((doc: any) => ({ ...doc.data(), id: doc.id })));
     };
-
     getSaved();
   }, []);
 
-  console.log(saved);
+  saved.map((info) => {
+    if (info.userID === user?.email) {
+      userSavedCarparks.push(info.carparkID);
+    }
+  });
 
-  const firestoreInfo = saved.map((info)=>{
-    setCarparkID(info.carparkID)
-    setUserID(info.userID)
-  })
-
-  //if its this userID, return that user's carparkID
-  
-
-
-  //create function to filter based on the saved carpark ID
-  //ensure correct user + ensure correct carpark ID
-
-  //based on the userID, generate all the carparkID
-
-
-  const filtered = ltaCarparkAvail.map((lots) => {
-    return carparkID.includes(lots.CarParkID) && 
-    })
-  };
+  const rows = ltaCarparkAvail.map((lot) => (
+    <tr key={uuid()}>
+      {userSavedCarparks.includes(lot.CarParkID) && lot.LotType === "C" ? (
+        <>
+          {" "}
+          <td>{lot.Development}</td>
+          <td>{lot.AvailableLots}</td>
+          <td>{lot.LotType}</td>
+        </>
+      ) : null}
+    </tr>
+  ));
 
   return (
-    <Container sx={{ maxWidth: 500 }} mx="auto">
+    <Container sx={{ maxWidth: 1000 }} mx="auto">
       <h1>User Dashboard</h1>
-      <h2>user info here</h2>
-      <div>
-        {saved.map((info) => {
-          return (
-            <div>
-              <p>{info.userID}</p> <p>{info.carparkID}</p>{" "}
-            </div>
-          );
-        })}
-      </div>
+      <h2>Your saved carparks</h2>
+      <ScrollArea
+        sx={{ height: 300 }}
+        onScrollPositionChange={({ y }) => setScrolled(y !== 0)}
+      >
+        <Table sx={{ minWidth: 700 }}>
+          <thead
+            className={cx(classes.header, { [classes.scrolled]: scrolled })}
+          >
+            <tr>
+              <th>Carpark Location</th>
+              <th>Lots Available</th>
+              <th>Lot Type</th>
+            </tr>
+          </thead>
+          <tbody>{rows}</tbody>
+        </Table>
+      </ScrollArea>
+
       <Button>
         <Link to="/logout">Sign out</Link>
       </Button>
