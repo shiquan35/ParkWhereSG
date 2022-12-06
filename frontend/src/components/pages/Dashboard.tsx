@@ -1,12 +1,13 @@
-import { useState, useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import axios from "axios";
 import { v4 as uuid } from "uuid";
 import { Button, Container } from "@mantine/core";
 import { Link } from "react-router-dom";
 import { db } from "../../Firebase";
-import { collection, getDocs } from "firebase/firestore";
+import { collection, getDocs, deleteDoc, doc } from "firebase/firestore";
 import { useAuth } from "../firebaseContext/FirebaseContext";
 import { createStyles, Table, ScrollArea } from "@mantine/core";
+import { IconTrash } from "@tabler/icons";
 
 const useStyles = createStyles((theme) => ({
   header: {
@@ -38,6 +39,7 @@ const useStyles = createStyles((theme) => ({
 type SavedInfo = {
   userID: string;
   carparkID: string;
+  id: string;
 };
 
 type CarparkDetails = {
@@ -66,19 +68,43 @@ const Dashboard = () => {
       .catch((err) => console.log(err));
   }, []);
 
-  useEffect(() => {
+  const updateList = async () => {
     const getSaved = async () => {
       const data = await getDocs(savedCollectionRef);
       setSaved(data.docs.map((doc: any) => ({ ...doc.data(), id: doc.id })));
     };
     getSaved();
+  };
+
+  useEffect(() => {
+    updateList();
   }, []);
+
+  // const deleteUser = async (id: string) => {
+  //   const data = doc(db, "favourites", id);
+  //   console.log(id);
+  //   await deleteDoc(data);
+  //   updateList();
+  // };
+
+  const handleClick = (e: React.MouseEvent) => {
+    saved.map((del) => {
+      if (del.userID === user?.email) {
+        console.log(del.id);
+        const data = doc(db, "favourites", del.id);
+        deleteDoc(data);
+        updateList();
+      }
+    });
+  };
 
   saved.map((info) => {
     if (info.userID === user?.email) {
       userSavedCarparks.push(info.carparkID);
     }
   });
+
+  console.log(saved);
 
   const rows = ltaCarparkAvail.map((lot) => (
     <tr key={uuid()}>
@@ -88,6 +114,9 @@ const Dashboard = () => {
           <td>{lot.Development}</td>
           <td>{lot.AvailableLots}</td>
           <td>{lot.LotType}</td>
+          <td>
+            <IconTrash onClick={handleClick} />
+          </td>
         </>
       ) : null}
     </tr>
@@ -109,6 +138,7 @@ const Dashboard = () => {
               <th>Carpark Location</th>
               <th>Lots Available</th>
               <th>Lot Type</th>
+              <th>Delete?</th>
             </tr>
           </thead>
           <tbody>{rows}</tbody>
