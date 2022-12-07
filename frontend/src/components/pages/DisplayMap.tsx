@@ -1,4 +1,5 @@
 import * as React from "react";
+import { useState } from "react";
 import ReactMapGL, {
   Marker,
   Popup,
@@ -14,6 +15,7 @@ import { addDoc } from "firebase/firestore";
 import { db } from "../../Firebase";
 import { collection } from "firebase/firestore";
 import { useAuth } from "../firebaseContext/FirebaseContext";
+import { Modal } from "@mantine/core";
 
 const TOKEN = process.env.REACT_APP_MAPBOX_TOKEN;
 
@@ -67,15 +69,17 @@ export function DisplayMap({ lotInfo, currLocation }: IAppProps) {
 
   const savedCollectionRef = collection(db, "favourites");
   const { user } = useAuth();
-  const createUser = async () => {
+  const createSavedInfo = async () => {
     await addDoc(savedCollectionRef, {
       carparkID: selectedCarpark?.CarParkID,
       userID: user?.email,
     });
   };
 
+  const [opened, setOpened] = useState(false);
   const handleClick = (e: React.MouseEvent) => {
-    createUser();
+    setOpened(true);
+    createSavedInfo();
   };
 
   selectedCarpark &&
@@ -85,6 +89,17 @@ export function DisplayMap({ lotInfo, currLocation }: IAppProps) {
 
   return (
     <>
+      <>
+        {/* Modal lets user know that they have clicked on the favourites button
+      reduces likelihood of them double-clicking  */}
+        <Modal
+          withCloseButton={false}
+          opened={opened}
+          onClose={() => setOpened(false)}
+        >
+          Added to favourites!
+        </Modal>
+      </>
       <div className="container">
         <div className="map">
           <ReactMapGL

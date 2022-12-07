@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import { useState, useEffect } from "react";
 import axios from "axios";
 import { v4 as uuid } from "uuid";
 import { Button, Container } from "@mantine/core";
@@ -50,6 +50,8 @@ type CarparkDetails = {
   Development: string;
   Location: string;
   LotType: string;
+  id: string;
+  userEmail: string;
 };
 
 const Dashboard = () => {
@@ -68,7 +70,8 @@ const Dashboard = () => {
       .catch((err) => console.log(err));
   }, []);
 
-  const updateList = async () => {
+  // to get the most updated saved information from the user
+  const updateList = () => {
     const getSaved = async () => {
       const data = await getDocs(savedCollectionRef);
       setSaved(data.docs.map((doc: any) => ({ ...doc.data(), id: doc.id })));
@@ -80,42 +83,44 @@ const Dashboard = () => {
     updateList();
   }, []);
 
-  // const deleteUser = async (id: string) => {
-  //   const data = doc(db, "favourites", id);
-  //   console.log(id);
-  //   await deleteDoc(data);
-  //   updateList();
-  // };
-
-  const handleClick = (e: React.MouseEvent) => {
-    saved.map((del) => {
-      if (del.userID === user?.email) {
-        console.log(del.id);
-        const data = doc(db, "favourites", del.id);
-        deleteDoc(data);
-        updateList();
-      }
-    });
-  };
-
   saved.map((info) => {
     if (info.userID === user?.email) {
       userSavedCarparks.push(info.carparkID);
     }
   });
 
-  console.log(saved);
+  // combining the map of ltaCarparkAvail and saved so that the documentId from firestore is accessible
+  const combinedMap = ltaCarparkAvail
+    .map((lot) => {
+      let savedID = saved.find((el) => el.carparkID === lot.CarParkID);
+      if (savedID?.id && savedID.userID) {
+        lot.id = savedID.id;
+        lot.userEmail = savedID.userID;
+      }
+      return lot;
+    })
+    .filter((lot) => lot.id !== undefined && lot.LotType === "C");
 
-  const rows = ltaCarparkAvail.map((lot) => (
+  //allows user to delete items that they have saved into their dashboard
+  const deleteData = async (id: string) => {
+    const data = doc(db, "favourites", id);
+    await deleteDoc(data);
+    // it doesnt update immediately after deleting?
+    updateList();
+  };
+
+  // bug found: if user keeps clicking on the same favourites button, firestore will keep creating a collection of it
+  // if user clicks twice, although dashboard will appear one entry, clicking on delete once will not delete it as it has another collection
+  // with the same info, just different ID
+  const rows = combinedMap.map((lot) => (
     <tr key={uuid()}>
-      {userSavedCarparks.includes(lot.CarParkID) && lot.LotType === "C" ? (
+      {lot.userEmail === user?.email ? (
         <>
-          {" "}
           <td>{lot.Development}</td>
           <td>{lot.AvailableLots}</td>
           <td>{lot.LotType}</td>
           <td>
-            <IconTrash onClick={handleClick} />
+            <IconTrash onClick={() => deleteData(lot.id)} />
           </td>
         </>
       ) : null}
