@@ -1,5 +1,5 @@
 import * as React from "react";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import ReactMapGL, {
   Marker,
   Popup,
@@ -11,11 +11,11 @@ import carparkMarker from "./MarkerStyles/carparkMarker.png";
 import GeocoderControl from "./GeocoderFiles/geocoder-control";
 import { v4 as uuid } from "uuid";
 import { List } from "./List";
-import { addDoc } from "firebase/firestore";
+import { collection, addDoc, getDocs, doc } from "firebase/firestore";
 import { db } from "../../Firebase";
-import { collection } from "firebase/firestore";
 import { useAuth } from "../firebaseContext/FirebaseContext";
 import { Modal } from "@mantine/core";
+import { flattenDiagnosticMessageText } from "typescript";
 
 const TOKEN = process.env.REACT_APP_MAPBOX_TOKEN;
 
@@ -53,6 +53,12 @@ type ViewState = {
   zoom: number;
 };
 
+type SavedInfo = {
+  userID: string;
+  carparkID: string;
+  id: string;
+};
+
 export function DisplayMap({ lotInfo, currLocation }: IAppProps) {
   const mapRef: any = React.useRef();
   console.log("pages folder display map");
@@ -76,11 +82,31 @@ export function DisplayMap({ lotInfo, currLocation }: IAppProps) {
     });
   };
 
+  const [saved, setSaved] = useState<SavedInfo[]>([]);
+  const userSavedCarparks: string[] = [];
+
   const [opened, setOpened] = useState(false);
   const handleClick = (e: React.MouseEvent) => {
     setOpened(true);
     createSavedInfo();
+    updateList();
   };
+
+  // to get the most updated saved information from the user
+  const updateList = async () => {
+    const data = await getDocs(savedCollectionRef);
+    setSaved(data.docs.map((doc: any) => ({ ...doc.data(), id: doc.id })));
+  };
+
+  useEffect(() => {
+    updateList();
+  }, []);
+
+  saved.map((info) => {
+    if (info.userID === user?.email) {
+      userSavedCarparks.push(info.carparkID);
+    }
+  });
 
   selectedCarpark &&
     console.log("selected lat", Number(selectedCarpark.Location.split(" ")[0]));
@@ -158,7 +184,16 @@ export function DisplayMap({ lotInfo, currLocation }: IAppProps) {
                   <h2>{selectedCarpark.Development}</h2>
                   <h2>Lots available: {selectedCarpark.AvailableLots}</h2>
                 </div>
-                <button onClick={handleClick}>Add to favourite</button>
+                <button
+                  disabled={
+                    userSavedCarparks.includes(selectedCarpark.CarParkID)
+                      ? true
+                      : false
+                  }
+                  onClick={handleClick}
+                >
+                  Add to favourite
+                </button>
               </Popup>
             )}
             <GeolocateControl

@@ -8,6 +8,7 @@ import { collection, getDocs, deleteDoc, doc } from "firebase/firestore";
 import { useAuth } from "../firebaseContext/FirebaseContext";
 import { createStyles, Table, ScrollArea } from "@mantine/core";
 import { IconTrash } from "@tabler/icons";
+import { Modal } from "@mantine/core";
 
 const useStyles = createStyles((theme) => ({
   header: {
@@ -61,7 +62,8 @@ const Dashboard = () => {
   const [ltaCarparkAvail, setLtaCarparkAvail] = useState<CarparkDetails[]>([]);
   const savedCollectionRef = collection(db, "favourites");
   const { user } = useAuth();
-  const userSavedCarparks: string[] = [];
+
+  const [opened, setOpened] = useState(false);
 
   useEffect(() => {
     axios
@@ -71,35 +73,64 @@ const Dashboard = () => {
   }, []);
 
   // to get the most updated saved information from the user
-  const updateList = () => {
-    const getSaved = async () => {
-      const data = await getDocs(savedCollectionRef);
-      setSaved(data.docs.map((doc: any) => ({ ...doc.data(), id: doc.id })));
-    };
-    getSaved();
+  const updateList = async () => {
+    const data = await getDocs(savedCollectionRef);
+    setSaved(data.docs.map((doc: any) => ({ ...doc.data(), id: doc.id })));
   };
 
   useEffect(() => {
     updateList();
   }, []);
 
-  saved.map((info) => {
-    if (info.userID === user?.email) {
-      userSavedCarparks.push(info.carparkID);
-    }
-  });
+  const displayItems = () => {
+    const combinedMap = ltaCarparkAvail
+      .map((lot) => {
+        let savedID = saved.find((el) => el.carparkID === lot.CarParkID);
+        if (savedID?.id && savedID.userID) {
+          lot.id = savedID.id;
+          lot.userEmail = savedID.userID;
+        }
+        return lot;
+      })
+      .filter((lot) => lot.id !== undefined && lot.LotType === "C");
+
+    const rows = combinedMap.map((lot) => (
+      <tr key={uuid()}>
+        {lot.userEmail === user?.email ? (
+          <>
+            <td>{lot.Development}</td>
+            <td>{lot.AvailableLots}</td>
+            <td>{lot.LotType}</td>
+            <td>
+              <IconTrash onClick={() => deleteData(lot.id)} />
+            </td>
+          </>
+        ) : null}
+      </tr>
+    ));
+
+    return rows;
+  };
+
+  console.log(saved);
+
+  // saved.map((info) => {
+  //   if (info.userID === user?.email) {
+  //     userSavedCarparks.push(info.carparkID);
+  //   }
+  // });
 
   // combining the map of ltaCarparkAvail and saved so that the documentId from firestore is accessible
-  const combinedMap = ltaCarparkAvail
-    .map((lot) => {
-      let savedID = saved.find((el) => el.carparkID === lot.CarParkID);
-      if (savedID?.id && savedID.userID) {
-        lot.id = savedID.id;
-        lot.userEmail = savedID.userID;
-      }
-      return lot;
-    })
-    .filter((lot) => lot.id !== undefined && lot.LotType === "C");
+  // const combinedMap = ltaCarparkAvail
+  //   .map((lot) => {
+  //     let savedID = saved.find((el) => el.carparkID === lot.CarParkID);
+  //     if (savedID?.id && savedID.userID) {
+  //       lot.id = savedID.id;
+  //       lot.userEmail = savedID.userID;
+  //     }
+  //     return lot;
+  //   })
+  //   .filter((lot) => lot.id !== undefined && lot.LotType === "C");
 
   //allows user to delete items that they have saved into their dashboard
   const deleteData = async (id: string) => {
@@ -107,53 +138,58 @@ const Dashboard = () => {
     await deleteDoc(data);
     // it doesnt update immediately after deleting?
     updateList();
+    displayItems();
+    setOpened(true);
+
+    // force refresh, changing state didnt update page immediately
+    // saved was updated in the console
+    window.location.reload();
   };
 
   // bug found: if user keeps clicking on the same favourites button, firestore will keep creating a collection of it
   // if user clicks twice, although dashboard will appear one entry, clicking on delete once will not delete it as it has another collection
   // with the same info, just different ID
-  const rows = combinedMap.map((lot) => (
-    <tr key={uuid()}>
-      {lot.userEmail === user?.email ? (
-        <>
-          <td>{lot.Development}</td>
-          <td>{lot.AvailableLots}</td>
-          <td>{lot.LotType}</td>
-          <td>
-            <IconTrash onClick={() => deleteData(lot.id)} />
-          </td>
-        </>
-      ) : null}
-    </tr>
-  ));
 
   return (
-    <Container sx={{ maxWidth: 1000 }} mx="auto">
-      <h1>User Dashboard</h1>
-      <h2>Your saved carparks</h2>
-      <ScrollArea
-        sx={{ height: 300 }}
-        onScrollPositionChange={({ y }) => setScrolled(y !== 0)}
-      >
-        <Table sx={{ minWidth: 700 }}>
-          <thead
-            className={cx(classes.header, { [classes.scrolled]: scrolled })}
-          >
-            <tr>
-              <th>Carpark Location</th>
-              <th>Lots Available</th>
-              <th>Lot Type</th>
-              <th>Delete?</th>
-            </tr>
-          </thead>
-          <tbody>{rows}</tbody>
-        </Table>
-      </ScrollArea>
+    <>
+      <>
+        {/* Modal lets user know that they have clicked on the favourites button
+      reduces likelihood of them double-clicking  */}
+        <Modal
+          withCloseButton={false}
+          opened={opened}
+          onClose={() => setOpened(false)}
+        >
+          Deleted!
+        </Modal>
+      </>
+      <Container sx={{ maxWidth: 1000 }} mx="auto">
+        <h1>User Dashboard</h1>
+        <h2>Your saved carparks</h2>
+        <ScrollArea
+          sx={{ height: 300 }}
+          onScrollPositionChange={({ y }) => setScrolled(y !== 0)}
+        >
+          <Table sx={{ minWidth: 700 }}>
+            <thead
+              className={cx(classes.header, { [classes.scrolled]: scrolled })}
+            >
+              <tr>
+                <th>Carpark Location</th>
+                <th>Lots Available</th>
+                <th>Lot Type</th>
+                <th>Delete?</th>
+              </tr>
+            </thead>
+            <tbody>{displayItems()}</tbody>
+          </Table>
+        </ScrollArea>
 
-      <Button>
-        <Link to="/logout">Sign out</Link>
-      </Button>
-    </Container>
+        <Button>
+          <Link to="/logout">Sign out</Link>
+        </Button>
+      </Container>
+    </>
   );
 };
 
