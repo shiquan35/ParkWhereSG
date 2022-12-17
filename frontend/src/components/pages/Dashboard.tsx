@@ -9,6 +9,7 @@ import { useAuth } from "../firebaseContext/FirebaseContext";
 import { createStyles, Table, ScrollArea } from "@mantine/core";
 import { IconTrash } from "@tabler/icons";
 import { Modal } from "@mantine/core";
+import { useForceUpdate } from "@mantine/hooks";
 
 const useStyles = createStyles((theme) => ({
   header: {
@@ -62,7 +63,6 @@ const Dashboard = () => {
   const [ltaCarparkAvail, setLtaCarparkAvail] = useState<CarparkDetails[]>([]);
   const savedCollectionRef = collection(db, "favourites");
   const { user } = useAuth();
-
   const [opened, setOpened] = useState(false);
 
   useEffect(() => {
@@ -75,80 +75,32 @@ const Dashboard = () => {
   // to get the most updated saved information from the user
   const updateList = async () => {
     const data = await getDocs(savedCollectionRef);
+    console.log("api call to Firebase");
     setSaved(data.docs.map((doc: any) => ({ ...doc.data(), id: doc.id })));
+  };
+
+  const deleteData = async (id: string) => {
+    const data = doc(db, "favourites", id);
+    await deleteDoc(data);
+    // it doesnt update immediately after deleting?
+    setOpened(true);
+    updateList();
   };
 
   useEffect(() => {
     updateList();
   }, []);
 
-  const displayItems = () => {
-    const combinedMap = ltaCarparkAvail
-      .map((lot) => {
-        let savedID = saved.find((el) => el.carparkID === lot.CarParkID);
-        if (savedID?.id && savedID.userID) {
-          lot.id = savedID.id;
-          lot.userEmail = savedID.userID;
-        }
-        return lot;
-      })
-      .filter((lot) => lot.id !== undefined && lot.LotType === "C");
-
-    const rows = combinedMap.map((lot) => (
-      <tr key={uuid()}>
-        {lot.userEmail === user?.email ? (
-          <>
-            <td>{lot.Development}</td>
-            <td>{lot.AvailableLots}</td>
-            <td>{lot.LotType}</td>
-            <td>
-              <IconTrash onClick={() => deleteData(lot.id)} />
-            </td>
-          </>
-        ) : null}
-      </tr>
-    ));
-
-    return rows;
-  };
-
-  console.log(saved);
-
-  // saved.map((info) => {
-  //   if (info.userID === user?.email) {
-  //     userSavedCarparks.push(info.carparkID);
-  //   }
-  // });
-
-  // combining the map of ltaCarparkAvail and saved so that the documentId from firestore is accessible
-  // const combinedMap = ltaCarparkAvail
-  //   .map((lot) => {
-  //     let savedID = saved.find((el) => el.carparkID === lot.CarParkID);
-  //     if (savedID?.id && savedID.userID) {
-  //       lot.id = savedID.id;
-  //       lot.userEmail = savedID.userID;
-  //     }
-  //     return lot;
-  //   })
-  //   .filter((lot) => lot.id !== undefined && lot.LotType === "C");
-
-  //allows user to delete items that they have saved into their dashboard
-  const deleteData = async (id: string) => {
-    const data = doc(db, "favourites", id);
-    await deleteDoc(data);
-    // it doesnt update immediately after deleting?
-    updateList();
-    displayItems();
-    setOpened(true);
-
-    // force refresh, changing state didnt update page immediately
-    // saved was updated in the console
-    window.location.reload();
-  };
-
-  // bug found: if user keeps clicking on the same favourites button, firestore will keep creating a collection of it
-  // if user clicks twice, although dashboard will appear one entry, clicking on delete once will not delete it as it has another collection
-  // with the same info, just different ID
+  // 13 dec
+  useEffect(() => {
+    console.log("entered useEffect");
+    console.log("saved", saved);
+    // recall api to re-render list after deletion
+    axios
+      .get("http://localhost:3000")
+      .then((res) => setLtaCarparkAvail(res.data))
+      .catch((err) => console.log(err));
+  }, [saved]);
 
   return (
     <>
@@ -181,7 +133,34 @@ const Dashboard = () => {
                 <th>Delete?</th>
               </tr>
             </thead>
-            <tbody>{displayItems()}</tbody>
+            <tbody>
+              {ltaCarparkAvail
+                .map((lot) => {
+                  let savedID = saved.find(
+                    (el) => el.carparkID === lot.CarParkID
+                  );
+                  if (savedID?.id && savedID.userID) {
+                    lot.id = savedID.id;
+                    lot.userEmail = savedID.userID;
+                  }
+                  return lot;
+                })
+                .filter((lot) => lot.id !== undefined && lot.LotType === "C")
+                .map((lot) => (
+                  <tr key={uuid()}>
+                    {lot.userEmail === user?.email ? (
+                      <>
+                        <td>{lot.Development}</td>
+                        <td>{lot.AvailableLots}</td>
+                        <td>{lot.LotType}</td>
+                        <td>
+                          <IconTrash onClick={() => deleteData(lot.id)} />
+                        </td>
+                      </>
+                    ) : null}
+                  </tr>
+                ))}
+            </tbody>
           </Table>
         </ScrollArea>
 
