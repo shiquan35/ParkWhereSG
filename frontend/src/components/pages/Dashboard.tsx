@@ -9,7 +9,6 @@ import { useAuth } from "../firebaseContext/FirebaseContext";
 import { createStyles, Table, ScrollArea } from "@mantine/core";
 import { IconTrash } from "@tabler/icons";
 import { Modal } from "@mantine/core";
-import { useForceUpdate } from "@mantine/hooks";
 
 const useStyles = createStyles((theme) => ({
   header: {
@@ -134,6 +133,7 @@ const Dashboard = () => {
               </tr>
             </thead>
             <tbody>
+              {/* combining the map of ltaCarparkAvail and saved so that the documentId from firestore is accessible */}
               {ltaCarparkAvail
                 .map((lot) => {
                   let savedID = saved.find(

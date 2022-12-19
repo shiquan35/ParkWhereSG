@@ -6,6 +6,7 @@ import {
   IconHome,
   IconPassword,
   IconLogout,
+  IconLogin,
   IconParking,
 } from "@tabler/icons";
 import { Link } from "react-router-dom";
@@ -166,9 +167,28 @@ export function Navigationbar() {
             <IconLogout className={classes.linkIcon} stroke={1.5} />
             <span>Logout</span>
           </Link>
+          <p style={{ fontSize: "10px" }}>
+            <em>
+              Disclaimer: Limited to data provided by LTA Datamall.
+              <br />
+              Zero lot availability could be due to missing data.
+            </em>
+          </p>
         </Navbar.Section>
       ) : (
-        ""
+        <Navbar.Section className={classes.footer}>
+          <Link to="/login" className={classes.link}>
+            <IconLogin className={classes.linkIcon} stroke={1.5} />
+            <span>Login</span>
+          </Link>
+          <p style={{ fontSize: "10px" }}>
+            <em>
+              Disclaimer: Limited to data provided by LTA Datamall.
+              <br />
+              Zero lot availability could be due to missing data.
+            </em>
+          </p>
+        </Navbar.Section>
       )}
     </Navbar>
   );

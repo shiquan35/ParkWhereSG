@@ -11,11 +11,12 @@ import carparkMarker from "./MarkerStyles/carparkMarker.png";
 import GeocoderControl from "./GeocoderFiles/geocoder-control";
 import { v4 as uuid } from "uuid";
 import { List } from "./List";
-import { collection, addDoc, getDocs, doc } from "firebase/firestore";
+import { collection, addDoc, getDocs } from "firebase/firestore";
 import { db } from "../../Firebase";
 import { useAuth } from "../firebaseContext/FirebaseContext";
-import { Modal } from "@mantine/core";
-import { flattenDiagnosticMessageText } from "typescript";
+import { Modal, Table } from "@mantine/core";
+import hdb from "./hdb.json";
+import { useNavigate } from "react-router-dom";
 
 const TOKEN = process.env.REACT_APP_MAPBOX_TOKEN;
 
@@ -61,20 +62,21 @@ type SavedInfo = {
 
 export function DisplayMap({ lotInfo, currLocation }: IAppProps) {
   const mapRef: any = React.useRef();
-  console.log("pages folder display map");
-
+  let navigate = useNavigate();
+  const { user } = useAuth();
   const [viewState, setViewState] = React.useState<ViewState>({
     longitude: currLocation.longitude,
     latitude: currLocation.latitude,
     zoom: currLocation.zoom,
   });
-
+  const [saved, setSaved] = useState<SavedInfo[]>([]);
+  const userSavedCarparks: string[] = [];
+  const [opened, setOpened] = useState(false);
   const [selectedCarpark, setSelectedCarpark] = React.useState<LotInfo | null>(
     null
   );
 
   const savedCollectionRef = collection(db, "favourites");
-  const { user } = useAuth();
   const createSavedInfo = async () => {
     await addDoc(savedCollectionRef, {
       carparkID: selectedCarpark?.CarParkID,
@@ -82,10 +84,10 @@ export function DisplayMap({ lotInfo, currLocation }: IAppProps) {
     });
   };
 
-  const [saved, setSaved] = useState<SavedInfo[]>([]);
-  const userSavedCarparks: string[] = [];
+  const handleRedirect = () => {
+    navigate("/login");
+  };
 
-  const [opened, setOpened] = useState(false);
   const handleClick = (e: React.MouseEvent) => {
     setOpened(true);
     createSavedInfo();
@@ -103,18 +105,18 @@ export function DisplayMap({ lotInfo, currLocation }: IAppProps) {
   }, []);
 
   saved.map((info) => {
-    if (info.userID === user?.email) {
-      userSavedCarparks.push(info.carparkID);
-    }
+    return info.userID === user?.email
+      ? userSavedCarparks.push(info.carparkID)
+      : null;
   });
 
-  selectedCarpark &&
-    console.log("selected lat", Number(selectedCarpark.Location.split(" ")[0]));
-  selectedCarpark &&
-    console.log("selected lng", Number(selectedCarpark.Location.split(" ")[1]));
+  // selectedCarpark &&
+  //   console.log("selected lat", Number(selectedCarpark.Location.split(" ")[0]));
+  // selectedCarpark &&
+  //   console.log("selected lng", Number(selectedCarpark.Location.split(" ")[1]));
 
   return (
-    <>
+    <div style={{ margin: "10px" }}>
       <>
         {/* Modal lets user know that they have clicked on the favourites button
       reduces likelihood of them double-clicking  */}
@@ -170,6 +172,7 @@ export function DisplayMap({ lotInfo, currLocation }: IAppProps) {
 
             {selectedCarpark && (
               <Popup
+                style={{ width: "300px" }}
                 longitude={Number(selectedCarpark.Location.split(" ")[1])}
                 latitude={Number(selectedCarpark.Location.split(" ")[0])}
                 closeOnClick={false}
@@ -181,8 +184,36 @@ export function DisplayMap({ lotInfo, currLocation }: IAppProps) {
                     setSelectedCarpark(null);
                   }}
                 >
-                  <h2>{selectedCarpark.Development}</h2>
-                  <h2>Lots available: {selectedCarpark.AvailableLots}</h2>
+                  <h3>{selectedCarpark.Development}</h3>
+                  <h3>Lots available: {selectedCarpark.AvailableLots}</h3>
+                  {/* relevant hdb parking info */}
+                  {hdb.records.map((cost) =>
+                    cost.car_park_no === selectedCarpark?.CarParkID ? (
+                      <>
+                        <Table>
+                          <thead>
+                            <tr>
+                              <th>Short Term</th>
+                              <th>Free Parking</th>
+                              <th>Night Parking</th>
+                            </tr>
+                          </thead>
+                          <tbody>
+                            <td>{cost.short_term_parking}</td>
+                            <td>{cost.free_parking}</td>
+                            <td>{cost.night_parking}</td>
+                          </tbody>
+                        </Table>
+                        {/* 
+                        <p>Short Term: {cost.short_term_parking}</p>
+                        <p>Free Parking: {cost.free_parking}</p>
+                        <p>Night Parking:{cost.night_parking}</p>
+                        <p>Parking Type: {cost.type_of_parking_system}</p> */}
+                      </>
+                    ) : (
+                      <></>
+                    )
+                  )}
                 </div>
                 <button
                   disabled={
@@ -190,7 +221,7 @@ export function DisplayMap({ lotInfo, currLocation }: IAppProps) {
                       ? true
                       : false
                   }
-                  onClick={handleClick}
+                  onClick={user === null ? handleRedirect : handleClick}
                 >
                   Add to favourite
                 </button>
@@ -212,6 +243,6 @@ export function DisplayMap({ lotInfo, currLocation }: IAppProps) {
           <List lotInfo={lotInfo} viewState={viewState} />
         </div>
       </div>
-    </>
+    </div>
   );
 }

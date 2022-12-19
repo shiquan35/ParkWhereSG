@@ -58,15 +58,8 @@ const Homepage = () => {
   }, []);
 
   console.log("current location", currentLocation);
-
   return (
     <>
-      <h1>Main Page</h1>
-      <h6>
-        Disclaimer: Limited to data provided by LTA Datamall.
-        <br />
-        Zero lot availability could be due to missing data.
-      </h6>
       {currentLocation && (
         <DisplayMap lotInfo={ltaCarparkAvail} currLocation={currentLocation} />
       )}
