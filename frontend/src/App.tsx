@@ -1,14 +1,15 @@
 import { AuthProvider } from "./components/firebaseContext/FirebaseContext";
 import { Routes, Route } from "react-router-dom";
-// import List from "./components/pages/List";
 import Login from "./components/authentication/Login";
 import SignUp from "./components/authentication/SignUp";
 import { ForgotPassword } from "./components/authentication/ForgotPassword";
-import Homepage from "./components/pages/Lta";
+import Homepage from "./components/pages/Homepage";
 import Dashboard from "./components/pages/Dashboard";
 import Logout from "./components/authentication/Logout";
 import DoesNotExist from "./components/pages/DoesNotExist";
 import Layout from "./components/sidebar/Layout";
+import CarparkRates from "./components/pages/CarparkRates";
+import PrivateRoute from "./PrivateRoute";
 
 function App() {
   return (
@@ -32,7 +33,14 @@ function App() {
               </Layout>
             }
           />
-          <Route path="/list" element={<Layout>{/* <List /> */}</Layout>} />
+          <Route
+            path="/carparkRates"
+            element={
+              <Layout>
+                <CarparkRates />
+              </Layout>
+            }
+          />
           <Route path="/login" element={<Login />} />
           <Route
             path="/logout"
@@ -47,7 +55,9 @@ function App() {
             path="/dashboard"
             element={
               <Layout>
-                <Dashboard />
+                <PrivateRoute>
+                  <Dashboard />
+                </PrivateRoute>
               </Layout>
             }
           />

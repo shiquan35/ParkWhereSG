@@ -2,11 +2,13 @@ import { Navigate } from "react-router-dom";
 import { useAuth } from "./components/firebaseContext/FirebaseContext";
 
 type PrivateRouteProps = {
-  children: React.ReactNode;
+  children: React.ReactElement;
 };
 
-export default function PrivateRoute(props: PrivateRouteProps) {
+const PrivateRoute = (props: PrivateRouteProps) => {
   const { user } = useAuth();
 
-  return user ? props.children : <Navigate to="/" />;
-}
+  return user?.email ? props.children : <Navigate to="/" />;
+};
+
+export default PrivateRoute;
