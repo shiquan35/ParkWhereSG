@@ -1,14 +1,15 @@
 import { AuthProvider } from "./components/firebaseContext/FirebaseContext";
 import { Routes, Route } from "react-router-dom";
-// import List from "./components/pages/List";
 import Login from "./components/authentication/Login";
 import SignUp from "./components/authentication/SignUp";
 import { ForgotPassword } from "./components/authentication/ForgotPassword";
-import Homepage from "./components/pages/Lta";
+import Homepage from "./components/pages/Homepage";
 import Dashboard from "./components/pages/Dashboard";
 import Logout from "./components/authentication/Logout";
 import DoesNotExist from "./components/pages/DoesNotExist";
 import Layout from "./components/sidebar/Layout";
+import CarparkRates from "./components/pages/CarparkRates";
+import PrivateRoute from "./PrivateRoute";
 
 function App() {
   return (
@@ -25,20 +26,21 @@ function App() {
           />
           <Route path="*" element={<DoesNotExist />} />
           <Route
-            path="/map"
+            path="/carparkRates"
             element={
               <Layout>
-                <Homepage />
+                <CarparkRates />
               </Layout>
             }
           />
-          <Route path="/list" element={<Layout>{/* <List /> */}</Layout>} />
           <Route path="/login" element={<Login />} />
           <Route
             path="/logout"
             element={
               <Layout>
-                <Logout />
+                <PrivateRoute>
+                  <Logout />
+                </PrivateRoute>
               </Layout>
             }
           />
@@ -47,7 +49,9 @@ function App() {
             path="/dashboard"
             element={
               <Layout>
-                <Dashboard />
+                <PrivateRoute>
+                  <Dashboard />
+                </PrivateRoute>
               </Layout>
             }
           />
@@ -55,7 +59,9 @@ function App() {
             path="/passwordReset"
             element={
               <Layout>
-                <ForgotPassword />
+                <PrivateRoute>
+                  <ForgotPassword />
+                </PrivateRoute>
               </Layout>
             }
           />

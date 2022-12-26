@@ -2,17 +2,18 @@ import { useState } from "react";
 import { createStyles, Navbar, Group, Code, Text } from "@mantine/core";
 import {
   IconMap,
-  IconList,
+  IconCoin,
   IconHome,
   IconPassword,
   IconLogout,
+  IconLogin,
   IconParking,
 } from "@tabler/icons";
 import { Link } from "react-router-dom";
 import { useAuth } from "../firebaseContext/FirebaseContext";
 
 const useStyles = createStyles((theme, _params, getRef) => {
-  const icon = getRef("icon");
+  const icon: string = getRef("icon");
   return {
     header: {
       paddingBottom: theme.spacing.md,
@@ -90,8 +91,8 @@ const useStyles = createStyles((theme, _params, getRef) => {
 });
 
 const data = [
-  { link: "/map", label: "Map View", icon: IconMap },
-  { link: "/list", label: "List view", icon: IconList },
+  { link: "/", label: "Map View", icon: IconMap },
+  { link: "/carparkRates", label: "Carpark Rates", icon: IconCoin },
 ];
 
 export function Navigationbar() {
@@ -166,9 +167,28 @@ export function Navigationbar() {
             <IconLogout className={classes.linkIcon} stroke={1.5} />
             <span>Logout</span>
           </Link>
+          <p style={{ fontSize: "10px" }}>
+            <em>
+              Disclaimer: Limited to data provided by LTA Datamall.
+              <br />
+              Zero lot availability could be due to missing data.
+            </em>
+          </p>
         </Navbar.Section>
       ) : (
-        ""
+        <Navbar.Section className={classes.footer}>
+          <Link to="/login" className={classes.link}>
+            <IconLogin className={classes.linkIcon} stroke={1.5} />
+            <span>Login</span>
+          </Link>
+          <p style={{ fontSize: "10px" }}>
+            <em>
+              Disclaimer: Limited to data provided by LTA Datamall.
+              <br />
+              Zero lot availability could be due to missing data.
+            </em>
+          </p>
+        </Navbar.Section>
       )}
     </Navbar>
   );
