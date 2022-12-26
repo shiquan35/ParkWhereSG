@@ -91,7 +91,7 @@ const useStyles = createStyles((theme, _params, getRef) => {
 });
 
 const data = [
-  { link: "/map", label: "Map View", icon: IconMap },
+  { link: "/", label: "Map View", icon: IconMap },
   { link: "/carparkRates", label: "Carpark Rates", icon: IconCoin },
 ];
 
