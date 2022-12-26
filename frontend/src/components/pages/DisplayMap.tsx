@@ -216,6 +216,7 @@ export function DisplayMap({ lotInfo, currLocation }: IAppProps) {
                   )}
                 </div>
                 <button
+                  className="favourite-button"
                   disabled={
                     userSavedCarparks.includes(selectedCarpark.CarParkID)
                       ? true
