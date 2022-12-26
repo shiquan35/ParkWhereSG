@@ -114,12 +114,14 @@ export const ForgotPassword = () => {
               <h2>Password Reset</h2>
               <PasswordInput
                 withAsterisk
+                sx={{ width: 400 }}
+                my={20}
                 label="Password Reset"
                 placeholder="Your new password"
                 value={value}
                 onChange={(event) => setValue(event.currentTarget.value)}
               />
-              <Button disabled={loading} type="submit">
+              <Button disabled={loading} type="submit" sx={{ width: 250 }}>
                 Reset Password
               </Button>
             </div>

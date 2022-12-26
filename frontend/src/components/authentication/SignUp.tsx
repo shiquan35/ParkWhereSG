@@ -4,9 +4,10 @@ import {
   TextInput,
   Button,
   Container,
+  Title,
+  Box,
   Stack,
   Alert,
-  Flex,
 } from "@mantine/core";
 import { useDisclosure } from "@mantine/hooks";
 import React, { useRef, useState } from "react";
@@ -67,13 +68,15 @@ const SignUp = () => {
 
   return (
     <Container sx={{ maxWidth: 500 }} mx="auto">
-      <h2>Sign Up here</h2>
+      <Title order={2} ta="center" py="xs">
+        Sign Up here
+      </Title>
       {error && (
         <Alert title="Oops!" color="red">
           {error}
         </Alert>
       )}
-      <Container>
+      <Box>
         <form onSubmit={handleSubmit}>
           <TextInput
             sx={{ maxWidth: 380 }}
@@ -105,19 +108,20 @@ const SignUp = () => {
           <Button
             disabled={loading}
             type="submit"
+            display="flex"
+            justify-content="center"
+            align-items="center"
             sx={{ marginTop: 15, width: 380 }}
             mx="auto"
           >
             Create my account!
           </Button>
         </form>
-      </Container>
+      </Box>
 
-      <Flex>
-        <h4>
-          Already have an account? <Link to="/login">Log in</Link>
-        </h4>
-      </Flex>
+      <Title order={4} ta="center" py="xs">
+        Already have an account? <Link to="/login">Log in</Link>
+      </Title>
     </Container>
   );
 };
