@@ -31,6 +31,7 @@
     "@types/mapbox__mapbox-gl-geocoder": "^4.7.2"
   },
   "scripts": {
+    "dev": "vite",
     "start": "react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test",

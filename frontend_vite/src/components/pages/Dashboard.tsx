@@ -74,7 +74,6 @@ const Dashboard = () => {
   // to get the most updated saved information from the user
   const updateList = async () => {
     const data = await getDocs(savedCollectionRef);
-    console.log("api call to Firebase");
     setSaved(data.docs.map((doc: any) => ({ ...doc.data(), id: doc.id })));
   };
 
@@ -92,8 +91,6 @@ const Dashboard = () => {
 
   // 13 dec
   useEffect(() => {
-    console.log("entered useEffect");
-    console.log("saved", saved);
     // recall api to re-render list after deletion
     axios
       .get("http://localhost:3000")

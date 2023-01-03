@@ -7,6 +7,7 @@ import ReactMapGL, {
   NavigationControl,
 } from "react-map-gl";
 import "mapbox-gl/dist/mapbox-gl.css";
+// import carparkMarker from "./MarkerStyles/carparkMarker.png";
 import carparkMarker from "./MarkerStyles/carparkMarker.png";
 import GeocoderControl from "./GeocoderFiles/geocoder-control";
 import { v4 as uuid } from "uuid";

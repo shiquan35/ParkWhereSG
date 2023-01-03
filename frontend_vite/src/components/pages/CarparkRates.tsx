@@ -59,7 +59,7 @@ const CarparkRates = () => {
 
   return (
     <>
-      <Table sx={{ minWidth: 500 }}>
+      <Table sx={{ minWidth: 500, margin: 10 }}>
         <thead className={cx(classes.header, { [classes.scrolled]: scrolled })}>
           <tr>
             <th>Outside Central Area</th>
@@ -75,7 +75,9 @@ const CarparkRates = () => {
         </tbody>
       </Table>
       <br></br>
-      <p>Carparks designated within Central Areas are as follows: </p>
+      <p>
+        &nbsp;&nbsp;Carparks designated within Central Areas are as follows:{" "}
+      </p>
       <ScrollArea
         sx={{ height: 400 }}
         onScrollPositionChange={({ y }) => setScrolled(y !== 0)}
