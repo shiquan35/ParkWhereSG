@@ -33,8 +33,6 @@ const Homepage = () => {
       latitude: crd.latitude,
       zoom: 16,
     });
-    console.log("current lat", crd.latitude);
-    console.log("current lng", crd.longitude);
   };
 
   const error = (err: any): void => {
@@ -57,7 +55,6 @@ const Homepage = () => {
       .catch((err) => console.log(err));
   }, []);
 
-  console.log("current location", currentLocation);
   return (
     <>
       {currentLocation && (
