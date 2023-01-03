@@ -4,8 +4,9 @@ import {
   TextInput,
   Button,
   Container,
+  Paper,
   Alert,
-  Flex,
+  Title,
 } from "@mantine/core";
 import { useDisclosure } from "@mantine/hooks";
 import React, { useRef, useState } from "react";
@@ -61,8 +62,10 @@ const Login = () => {
   };
 
   return (
-    <Container sx={{ maxWidth: 500 }} mx="auto">
-      <h2>Log In here</h2>
+    <Paper shadow="sm" radius="md" p="sm" sx={{ maxWidth: 500 }} mx="auto">
+      <Title order={2} ta="center" py="xs">
+        Log In here
+      </Title>
       {error && (
         <Alert title="Oops!" color="red">
           {error}
@@ -94,6 +97,9 @@ const Login = () => {
           <Button
             disabled={loading}
             type="submit"
+            display="flex"
+            justify-content="center"
+            align-items="center"
             sx={{ marginTop: 15, width: 380 }}
             mx="auto"
           >
@@ -102,12 +108,10 @@ const Login = () => {
         </form>
       </Container>
 
-      <Flex>
-        <h4>
-          Don't have an account? <Link to="/signup">Sign Up!</Link>
-        </h4>
-      </Flex>
-    </Container>
+      <Title order={4} ta="center" py="xs">
+        Don't have an account? <Link to="/signup">Sign Up!</Link>
+      </Title>
+    </Paper>
   );
 };
 

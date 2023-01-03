@@ -26,14 +26,6 @@ function App() {
           />
           <Route path="*" element={<DoesNotExist />} />
           <Route
-            path="/map"
-            element={
-              <Layout>
-                <Homepage />
-              </Layout>
-            }
-          />
-          <Route
             path="/carparkRates"
             element={
               <Layout>
@@ -46,7 +38,9 @@ function App() {
             path="/logout"
             element={
               <Layout>
-                <Logout />
+                <PrivateRoute>
+                  <Logout />
+                </PrivateRoute>
               </Layout>
             }
           />
@@ -65,7 +59,9 @@ function App() {
             path="/passwordReset"
             element={
               <Layout>
-                <ForgotPassword />
+                <PrivateRoute>
+                  <ForgotPassword />
+                </PrivateRoute>
               </Layout>
             }
           />
