@@ -1,5 +1,4 @@
-import { useState } from "react";
-import { createStyles, Navbar, Group, Code, Text } from "@mantine/core";
+import { createStyles, Navbar, Group } from "@mantine/core";
 import {
   IconMap,
   IconCoin,
@@ -91,67 +90,35 @@ const useStyles = createStyles((theme, _params, getRef) => {
 });
 
 const data = [
-  { link: "/", label: "Map View", icon: IconMap },
-  { link: "/carparkRates", label: "Carpark Rates", icon: IconCoin },
+  { link: "/", icon: IconMap },
+  { link: "/carparkRates", icon: IconCoin },
 ];
 
-export function Navigationbar() {
+export function NavigationbarMobile() {
   const { user } = useAuth();
-  const { classes, cx } = useStyles();
-  const [active, setActive] = useState("Billing");
+  const { classes } = useStyles();
 
   const links = data.map((item) => (
-    <Link
-      className={cx(classes.link, {
-        [classes.linkActive]: item.label === active,
-      })}
-      to={item.link}
-      key={item.label}
-      onClick={() => {
-        setActive(item.label);
-      }}
-    >
+    <Link className={classes.link} to={item.link} key={item.link}>
       <item.icon className={classes.linkIcon} stroke={1.5} />
-      <span>{item.label}</span>
     </Link>
   ));
 
   return (
-    <Navbar height="100vh" width={{ sm: 300 }} p="md">
+    <Navbar height="100vh" width={{ sm: 100 }} p="md">
       <Navbar.Section grow>
         <Group className={classes.header} position="apart">
           <IconParking size={28} />
-          <Text weight={500} size="sm" color="dimmed" mb="xs">
-            {user?.email}
-          </Text>
-          <Code sx={{ fontWeight: 700 }}>v1.0</Code>
         </Group>
         {links}
         {/* if user has not logged in, direct to login */}
         {user ? (
-          <Link
-            className={cx(classes.link, {
-              [classes.linkActive]: "dashboard" === active,
-            })}
-            to="/dashboard"
-            key="dashboard"
-            onClick={() => {
-              setActive("dashboard");
-            }}
-          >
+          <Link className={classes.link} to="/dashboard" key="dashboard">
             <IconHome className={classes.linkIcon} stroke={1.5} />
-            <span>Dashboard</span>{" "}
           </Link>
         ) : (
-          <Link
-            to="/login"
-            key="dashboard"
-            className={cx(classes.link, {
-              [classes.linkActive]: "dashboard" === active,
-            })}
-          >
+          <Link to="/login" key="dashboard" className={classes.link}>
             <IconHome className={classes.linkIcon} stroke={1.5} />
-            <span>Dashboard</span>
           </Link>
         )}
       </Navbar.Section>
@@ -160,12 +127,10 @@ export function Navigationbar() {
         <Navbar.Section className={classes.footer}>
           <Link to="/passwordReset" className={classes.link}>
             <IconPassword className={classes.linkIcon} stroke={1.5} />
-            <span>Reset Password</span>
           </Link>
 
           <Link to="/logout" className={classes.link}>
             <IconLogout className={classes.linkIcon} stroke={1.5} />
-            <span>Logout</span>
           </Link>
           <p style={{ fontSize: "10px" }}>
             <em>
@@ -179,7 +144,6 @@ export function Navigationbar() {
         <Navbar.Section className={classes.footer}>
           <Link to="/login" className={classes.link}>
             <IconLogin className={classes.linkIcon} stroke={1.5} />
-            <span>Login</span>
           </Link>
           <p style={{ fontSize: "10px" }}>
             <em>

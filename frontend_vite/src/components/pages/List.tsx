@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { createStyles, Table, ScrollArea } from "@mantine/core";
+import { createStyles, Table, ScrollArea, Title } from "@mantine/core";
 
 const useStyles = createStyles((theme) => ({
   header: {
@@ -70,7 +70,9 @@ export function List({ lotInfo, viewState }: IAppProps) {
 
   return (
     <>
-      <h1>Nearby Carparks</h1>
+      <Title order={1} sx={{ margin: 10, marginLeft: 5 }}>
+        Nearby Carparks
+      </Title>
       <ScrollArea
         sx={{ height: 400 }}
         onScrollPositionChange={({ y }) => setScrolled(y !== 0)}

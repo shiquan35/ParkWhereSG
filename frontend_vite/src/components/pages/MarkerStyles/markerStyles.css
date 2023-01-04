@@ -121,7 +121,14 @@ li:hover {
   margin-top: 8px;
 }
 
-/* words inside popup information */
-h3 {
-  margin: 5px;
+@media (max-width: 400px) {
+}
+
+@media (max-width: 600px) {
+}
+
+@media (max-width: 900px) {
+  .container {
+    display: block;
+  }
 }

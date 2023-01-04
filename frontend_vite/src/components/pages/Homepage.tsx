@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import axios from "axios";
 import { DisplayMap } from "./DisplayMap";
 import "./MarkerStyles/markerStyles.css";
+import "../../App.css";
 
 type CarparkDetails = {
   Agency: string;
