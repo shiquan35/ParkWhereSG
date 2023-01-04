@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { createStyles, Table, ScrollArea } from "@mantine/core";
+import { createStyles, Table, ScrollArea, Text, Title } from "@mantine/core";
 
 const useStyles = createStyles((theme) => ({
   header: {
@@ -59,6 +59,13 @@ const CarparkRates = () => {
 
   return (
     <>
+      <Title order={2} sx={{ margin: 10, marginBottom: 2 }}>
+        {" "}
+        Rates for HDB Carparks Only
+      </Title>
+      <Text fz="xs" sx={{ margin: 10, marginTop: 0 }}>
+        For shopping mall carparks, please refer to their respective websites
+      </Text>
       <Table sx={{ minWidth: 500, margin: 10 }}>
         <thead className={cx(classes.header, { [classes.scrolled]: scrolled })}>
           <tr>
@@ -75,9 +82,9 @@ const CarparkRates = () => {
         </tbody>
       </Table>
       <br></br>
-      <p>
-        &nbsp;&nbsp;Carparks designated within Central Areas are as follows:{" "}
-      </p>
+      <Text fz="md" sx={{ margin: 10 }}>
+        Carparks designated within Central Areas are as follows:{" "}
+      </Text>
       <ScrollArea
         sx={{ height: 400 }}
         onScrollPositionChange={({ y }) => setScrolled(y !== 0)}

@@ -64,12 +64,12 @@ const Dashboard = () => {
   const { user } = useAuth();
   const [opened, setOpened] = useState(false);
 
-  useEffect(() => {
-    axios
-      .get("http://localhost:3000")
-      .then((res) => setLtaCarparkAvail(res.data))
-      .catch((err) => console.log(err));
-  }, []);
+  // useEffect(() => {
+  //   axios
+  //     .get("http://localhost:3000")
+  //     .then((res) => setLtaCarparkAvail(res.data))
+  //     .catch((err) => console.log(err));
+  // }, []);
 
   // to get the most updated saved information from the user
   const updateList = async () => {
@@ -77,19 +77,17 @@ const Dashboard = () => {
     setSaved(data.docs.map((doc: any) => ({ ...doc.data(), id: doc.id })));
   };
 
-  const deleteData = async (id: string) => {
-    const data = doc(db, "favourites", id);
-    await deleteDoc(data);
-    // it doesnt update immediately after deleting?
-    setOpened(true);
-    updateList();
-  };
-
   useEffect(() => {
     updateList();
   }, []);
 
-  // 13 dec
+  const deleteData = async (id: string) => {
+    const data = doc(db, "favourites", id);
+    await deleteDoc(data);
+    setOpened(true);
+    updateList();
+  };
+
   useEffect(() => {
     // recall api to re-render list after deletion
     axios
