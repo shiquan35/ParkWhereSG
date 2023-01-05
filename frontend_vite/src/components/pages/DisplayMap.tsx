@@ -78,6 +78,7 @@ export function DisplayMap({ lotInfo, currLocation }: IAppProps) {
   // track browser size
   const [mapWidth, setMapWidth] = useState<number>();
   const [mapHeight, setMapHeight] = useState<number>();
+  const [popupWidth, setPopupWidth] = useState<number>();
   const [screenSize, setScreenSize] = useState<{
     dynamicWidth: number;
     dynamicHeight: number;
@@ -98,9 +99,11 @@ export function DisplayMap({ lotInfo, currLocation }: IAppProps) {
     if (screenSize.dynamicWidth > 390) {
       setMapWidth(700);
       setMapHeight(700);
+      setPopupWidth(300);
     } else if (screenSize.dynamicWidth <= 390) {
       setMapWidth(263);
       setMapHeight(600);
+      setPopupWidth(130);
     }
 
     console.log(screenSize);
@@ -145,6 +148,7 @@ export function DisplayMap({ lotInfo, currLocation }: IAppProps) {
 
   console.log(mapHeight);
   console.log(mapWidth);
+  console.log(popupWidth);
 
   return (
     <div style={{ margin: "10px" }}>
@@ -204,7 +208,7 @@ export function DisplayMap({ lotInfo, currLocation }: IAppProps) {
 
             {selectedCarpark && (
               <Popup
-                style={{ width: "300px" }}
+                style={{ width: `${popupWidth}px` }}
                 longitude={Number(selectedCarpark.Location.split(" ")[1])}
                 latitude={Number(selectedCarpark.Location.split(" ")[0])}
                 closeOnClick={false}
