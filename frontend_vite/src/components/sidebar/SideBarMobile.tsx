@@ -1,4 +1,4 @@
-import { createStyles, Navbar, Group } from "@mantine/core";
+import { createStyles, Navbar, Group, Container } from "@mantine/core";
 import {
   IconMap,
   IconCoin,
@@ -8,6 +8,7 @@ import {
   IconLogin,
   IconParking,
 } from "@tabler/icons";
+import "../styles.css";
 import { Link } from "react-router-dom";
 import { useAuth } from "../firebaseContext/FirebaseContext";
 
@@ -106,7 +107,7 @@ export function NavigationbarMobile() {
 
   return (
     <Navbar height="100vh" width={{ sm: 100 }} p="md">
-      <Navbar.Section grow>
+      <Navbar.Section>
         <Group className={classes.header} position="apart">
           <IconParking size={28} />
         </Group>
@@ -132,26 +133,30 @@ export function NavigationbarMobile() {
           <Link to="/logout" className={classes.link}>
             <IconLogout className={classes.linkIcon} stroke={1.5} />
           </Link>
-          <p style={{ fontSize: "10px" }}>
-            <em>
-              Disclaimer: Limited to data provided by LTA Datamall.
-              <br />
-              Zero lot availability could be due to missing data.
-            </em>
-          </p>
+          <Container px={0} sx={{ margin: 0, width: 24 }}>
+            <p style={{ fontSize: "10px", width: "24px" }}>
+              <em style={{ fontSize: "10px", width: "24px" }}>
+                Disclaimer: Limited to data provided by LTA Datamall.
+                <br />
+                Zero lot availability could be due to missing data.
+              </em>
+            </p>
+          </Container>
         </Navbar.Section>
       ) : (
         <Navbar.Section className={classes.footer}>
           <Link to="/login" className={classes.link}>
             <IconLogin className={classes.linkIcon} stroke={1.5} />
           </Link>
-          <p style={{ fontSize: "10px" }}>
-            <em>
-              Disclaimer: Limited to data provided by LTA Datamall.
-              <br />
-              Zero lot availability could be due to missing data.
-            </em>
-          </p>
+          <Container px={0} sx={{ margin: 0, width: 24 }}>
+            <p style={{ fontSize: "10px", width: "24px" }}>
+              <em>
+                Disclaimer: Limited to data provided by LTA Datamall.
+                <br />
+                Zero lot availability could be due to missing data.
+              </em>
+            </p>
+          </Container>
         </Navbar.Section>
       )}
     </Navbar>
