@@ -32,7 +32,7 @@ const Homepage = () => {
     setCurrentLocation({
       longitude: crd.longitude,
       latitude: crd.latitude,
-      zoom: 16,
+      zoom: 15,
     });
   };
 

@@ -73,9 +73,41 @@ export function DisplayMap({ lotInfo, currLocation }: IAppProps) {
   const [saved, setSaved] = useState<SavedInfo[]>([]);
   const userSavedCarparks: string[] = [];
   const [opened, setOpened] = useState(false);
-  const [selectedCarpark, setSelectedCarpark] = React.useState<LotInfo | null>(
-    null
-  );
+  const [selectedCarpark, setSelectedCarpark] = useState<LotInfo | null>(null);
+
+  // track browser size
+  const [mapWidth, setMapWidth] = useState<number>();
+  const [mapHeight, setMapHeight] = useState<number>();
+  const [screenSize, setScreenSize] = useState<{
+    dynamicWidth: number;
+    dynamicHeight: number;
+  }>({
+    dynamicWidth: window.innerWidth,
+    dynamicHeight: window.innerHeight,
+  });
+
+  const setDimension = () => {
+    setScreenSize({
+      dynamicWidth: window.innerWidth,
+      dynamicHeight: window.innerHeight,
+    });
+  };
+
+  useEffect(() => {
+    window.addEventListener("resize", setDimension);
+    if (screenSize.dynamicWidth > 390) {
+      setMapWidth(700);
+      setMapHeight(700);
+    } else if (screenSize.dynamicWidth <= 390) {
+      setMapWidth(263);
+      setMapHeight(600);
+    }
+
+    console.log(screenSize);
+    return () => {
+      window.removeEventListener("resize", setDimension);
+    };
+  }, [screenSize]);
 
   const savedCollectionRef = collection(db, "favourites");
   const createSavedInfo = async () => {
@@ -111,6 +143,9 @@ export function DisplayMap({ lotInfo, currLocation }: IAppProps) {
       : null;
   });
 
+  console.log(mapHeight);
+  console.log(mapWidth);
+
   return (
     <div style={{ margin: "10px" }}>
       <>
@@ -129,8 +164,9 @@ export function DisplayMap({ lotInfo, currLocation }: IAppProps) {
           <ReactMapGL
             ref={mapRef}
             style={{
-              width: "700px",
-              height: "700px",
+              // width: "700px",
+              width: `${mapWidth}px`,
+              height: `${mapHeight}px`,
               border: "2px solid black",
             }}
             {...viewState}
