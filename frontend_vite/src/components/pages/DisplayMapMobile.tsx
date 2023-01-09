@@ -61,7 +61,7 @@ type SavedInfo = {
   id: string;
 };
 
-export function DisplayMap({ lotInfo, currLocation }: IAppProps) {
+export function DisplayMapMobile({ lotInfo, currLocation }: IAppProps) {
   const mapRef: any = React.useRef();
   let navigate = useNavigate();
   const { user } = useAuth();
@@ -83,14 +83,14 @@ export function DisplayMap({ lotInfo, currLocation }: IAppProps) {
     dynamicWidth: number;
     dynamicHeight: number;
   }>({
-    dynamicWidth: window.innerWidth,
-    dynamicHeight: window.innerHeight,
+    dynamicWidth: window.outerWidth,
+    dynamicHeight: window.outerHeight,
   });
 
   const setDimension = () => {
     setScreenSize({
-      dynamicWidth: window.innerWidth,
-      dynamicHeight: window.innerHeight,
+      dynamicWidth: window.outerWidth,
+      dynamicHeight: window.outerHeight,
     });
   };
 
@@ -164,13 +164,15 @@ export function DisplayMap({ lotInfo, currLocation }: IAppProps) {
         </Modal>
       </>
       <div className="container">
-        <div className="map">
+        <div className="mapMobile">
           <ReactMapGL
             ref={mapRef}
             style={{
-              // width: "700px",
-              width: `${mapWidth}px`,
-              height: `${mapHeight}px`,
+              // state controlled height width causes map to be buggy
+              // width: `${mapWidth}px`,
+              // height: `${mapHeight}px`,
+              width: "280px",
+              height: `600px`,
               border: "2px solid black",
             }}
             {...viewState}
@@ -208,7 +210,8 @@ export function DisplayMap({ lotInfo, currLocation }: IAppProps) {
 
             {selectedCarpark && (
               <Popup
-                style={{ width: `${popupWidth}px` }}
+                // style={{ width: `${popupWidth}px` }}
+                style={{ width: `130px` }}
                 longitude={Number(selectedCarpark.Location.split(" ")[1])}
                 latitude={Number(selectedCarpark.Location.split(" ")[0])}
                 closeOnClick={false}
