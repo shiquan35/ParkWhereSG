@@ -61,18 +61,6 @@ const Homepage = () => {
   }, []);
 
   return (
-    /*
-    <>
-      <div>
-        {currentLocation && (
-          <DisplayMap
-            lotInfo={ltaCarparkAvail}
-            currLocation={currentLocation}
-          />
-        )}
-      </div>
-    </>
-    */
     <>
       <div>
         {currentLocation &&

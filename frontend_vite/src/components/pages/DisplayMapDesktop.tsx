@@ -146,10 +146,6 @@ export function DisplayMapDesktop({ lotInfo, currLocation }: IAppProps) {
       : null;
   });
 
-  console.log(mapHeight);
-  console.log(mapWidth);
-  console.log(popupWidth);
-
   return (
     <div style={{ margin: "10px" }}>
       <>
@@ -168,9 +164,6 @@ export function DisplayMapDesktop({ lotInfo, currLocation }: IAppProps) {
           <ReactMapGL
             ref={mapRef}
             style={{
-              // state controlled height width causes map to be buggy
-              // width: `${mapWidth}px`,
-              // height: `${mapHeight}px`,
               width: "700px",
               height: `700px`,
               border: "2px solid black",
@@ -210,7 +203,6 @@ export function DisplayMapDesktop({ lotInfo, currLocation }: IAppProps) {
 
             {selectedCarpark && (
               <Popup
-                // style={{ width: `${popupWidth}px` }}
                 style={{ width: `300px` }}
                 longitude={Number(selectedCarpark.Location.split(" ")[1])}
                 latitude={Number(selectedCarpark.Location.split(" ")[0])}
