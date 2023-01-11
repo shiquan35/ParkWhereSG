@@ -15,7 +15,7 @@ import { List } from "./List";
 import { collection, addDoc, getDocs } from "firebase/firestore";
 import { db } from "../../Firebase";
 import { useAuth } from "../firebaseContext/FirebaseContext";
-import { Modal, Table } from "@mantine/core";
+import { Modal, Table, Text, Title } from "@mantine/core";
 import hdb from "./hdb.json";
 import { useNavigate } from "react-router-dom";
 
@@ -61,7 +61,7 @@ type SavedInfo = {
   id: string;
 };
 
-export function DisplayMap({ lotInfo, currLocation }: IAppProps) {
+export function DisplayMapMobile({ lotInfo, currLocation }: IAppProps) {
   const mapRef: any = React.useRef();
   let navigate = useNavigate();
   const { user } = useAuth();
@@ -73,9 +73,44 @@ export function DisplayMap({ lotInfo, currLocation }: IAppProps) {
   const [saved, setSaved] = useState<SavedInfo[]>([]);
   const userSavedCarparks: string[] = [];
   const [opened, setOpened] = useState(false);
-  const [selectedCarpark, setSelectedCarpark] = React.useState<LotInfo | null>(
-    null
-  );
+  const [selectedCarpark, setSelectedCarpark] = useState<LotInfo | null>(null);
+
+  // track browser size
+  const [mapWidth, setMapWidth] = useState<number>();
+  const [mapHeight, setMapHeight] = useState<number>();
+  const [popupWidth, setPopupWidth] = useState<number>();
+  const [screenSize, setScreenSize] = useState<{
+    dynamicWidth: number;
+    dynamicHeight: number;
+  }>({
+    dynamicWidth: window.outerWidth,
+    dynamicHeight: window.outerHeight,
+  });
+
+  const setDimension = () => {
+    setScreenSize({
+      dynamicWidth: window.outerWidth,
+      dynamicHeight: window.outerHeight,
+    });
+  };
+
+  useEffect(() => {
+    window.addEventListener("resize", setDimension);
+    if (screenSize.dynamicWidth > 390) {
+      setMapWidth(700);
+      setMapHeight(700);
+      setPopupWidth(300);
+    } else if (screenSize.dynamicWidth <= 390) {
+      setMapWidth(263);
+      setMapHeight(600);
+      setPopupWidth(130);
+    }
+
+    console.log(screenSize);
+    return () => {
+      window.removeEventListener("resize", setDimension);
+    };
+  }, [screenSize]);
 
   const savedCollectionRef = collection(db, "favourites");
   const createSavedInfo = async () => {
@@ -111,11 +146,6 @@ export function DisplayMap({ lotInfo, currLocation }: IAppProps) {
       : null;
   });
 
-  // selectedCarpark &&
-  //   console.log("selected lat", Number(selectedCarpark.Location.split(" ")[0]));
-  // selectedCarpark &&
-  //   console.log("selected lng", Number(selectedCarpark.Location.split(" ")[1]));
-
   return (
     <div style={{ margin: "10px" }}>
       <>
@@ -130,12 +160,12 @@ export function DisplayMap({ lotInfo, currLocation }: IAppProps) {
         </Modal>
       </>
       <div className="container">
-        <div className="map">
+        <div className="mapMobile">
           <ReactMapGL
             ref={mapRef}
             style={{
-              width: "700px",
-              height: "700px",
+              width: "280px",
+              height: `600px`,
               border: "2px solid black",
             }}
             {...viewState}
@@ -173,7 +203,7 @@ export function DisplayMap({ lotInfo, currLocation }: IAppProps) {
 
             {selectedCarpark && (
               <Popup
-                style={{ width: "300px" }}
+                style={{ width: `130px` }}
                 longitude={Number(selectedCarpark.Location.split(" ")[1])}
                 latitude={Number(selectedCarpark.Location.split(" ")[0])}
                 closeOnClick={false}
@@ -185,8 +215,10 @@ export function DisplayMap({ lotInfo, currLocation }: IAppProps) {
                     setSelectedCarpark(null);
                   }}
                 >
-                  <h3>{selectedCarpark.Development}</h3>
-                  <h3>Lots available: {selectedCarpark.AvailableLots}</h3>
+                  <Title order={4}>{selectedCarpark.Development}</Title>
+                  <Text fw={700} fz="md">
+                    Lots available: {selectedCarpark.AvailableLots}
+                  </Text>
                   {/* relevant hdb parking info */}
                   {hdb.records.map((cost) =>
                     cost.car_park_no === selectedCarpark?.CarParkID ? (
@@ -205,11 +237,6 @@ export function DisplayMap({ lotInfo, currLocation }: IAppProps) {
                             <td>{cost.night_parking}</td>
                           </tbody>
                         </Table>
-                        {/* 
-                        <p>Short Term: {cost.short_term_parking}</p>
-                        <p>Free Parking: {cost.free_parking}</p>
-                        <p>Night Parking:{cost.night_parking}</p>
-                        <p>Parking Type: {cost.type_of_parking_system}</p> */}
                       </>
                     ) : (
                       <></>

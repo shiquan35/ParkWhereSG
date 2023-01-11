@@ -121,7 +121,24 @@ li:hover {
   margin-top: 8px;
 }
 
-/* words inside popup information */
-h3 {
-  margin: 5px;
+.map {
+  /* width: 400px; */
+}
+
+@media (max-width: 413px) {
+}
+
+@media (max-width: 600px) {
+}
+
+@media (max-width: 900px) {
+  .container {
+    display: block;
+  }
+}
+
+@media only screen and (max-width: 413px) {
+  .mapMobile {
+    width: 400px;
+  }
 }

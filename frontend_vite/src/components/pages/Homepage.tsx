@@ -1,7 +1,9 @@
 import { useState, useEffect } from "react";
 import axios from "axios";
-import { DisplayMap } from "./DisplayMap";
 import "./MarkerStyles/markerStyles.css";
+import { useMediaQuery } from "@mantine/hooks";
+import { DisplayMapMobile } from "./DisplayMapMobile";
+import { DisplayMapDesktop } from "./DisplayMapDesktop";
 
 type CarparkDetails = {
   Agency: string;
@@ -26,17 +28,20 @@ const Homepage = () => {
     null!
   );
 
+  const mobile = useMediaQuery("(max-width: 413px)");
+
   const success = (pos: any): void => {
     const crd = pos.coords;
     setCurrentLocation({
       longitude: crd.longitude,
       latitude: crd.latitude,
-      zoom: 16,
+      zoom: 15,
     });
   };
 
   const error = (err: any): void => {
     console.warn(`ERROR(${err.code}): ${err.message}`);
+    window.location.reload(); // reload page if error
   };
 
   const options: { enableHighAccuracy: boolean; timeout: number } = {
@@ -57,9 +62,20 @@ const Homepage = () => {
 
   return (
     <>
-      {currentLocation && (
-        <DisplayMap lotInfo={ltaCarparkAvail} currLocation={currentLocation} />
-      )}
+      <div>
+        {currentLocation &&
+          (mobile ? (
+            <DisplayMapMobile
+              lotInfo={ltaCarparkAvail}
+              currLocation={currentLocation}
+            />
+          ) : (
+            <DisplayMapDesktop
+              lotInfo={ltaCarparkAvail}
+              currLocation={currentLocation}
+            />
+          ))}
+      </div>
     </>
   );
 };
