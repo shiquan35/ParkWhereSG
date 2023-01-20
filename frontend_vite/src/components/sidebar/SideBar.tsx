@@ -172,7 +172,11 @@ export function Navigationbar() {
               Disclaimer: Limited to data provided by LTA Datamall.
               <br />
               Zero lot availability could be due to missing data.
+              <br />
+              Created by Annabel and Shi Quan
             </em>
+
+            <br />
           </p>
         </Navbar.Section>
       ) : (

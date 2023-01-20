@@ -75,43 +75,6 @@ export function DisplayMapDesktop({ lotInfo, currLocation }: IAppProps) {
   const [opened, setOpened] = useState(false);
   const [selectedCarpark, setSelectedCarpark] = useState<LotInfo | null>(null);
 
-  // track browser size
-  const [mapWidth, setMapWidth] = useState<number>();
-  const [mapHeight, setMapHeight] = useState<number>();
-  const [popupWidth, setPopupWidth] = useState<number>();
-  const [screenSize, setScreenSize] = useState<{
-    dynamicWidth: number;
-    dynamicHeight: number;
-  }>({
-    dynamicWidth: window.outerWidth,
-    dynamicHeight: window.outerHeight,
-  });
-
-  const setDimension = () => {
-    setScreenSize({
-      dynamicWidth: window.outerWidth,
-      dynamicHeight: window.outerHeight,
-    });
-  };
-
-  useEffect(() => {
-    window.addEventListener("resize", setDimension);
-    if (screenSize.dynamicWidth > 390) {
-      setMapWidth(700);
-      setMapHeight(700);
-      setPopupWidth(300);
-    } else if (screenSize.dynamicWidth <= 390) {
-      setMapWidth(263);
-      setMapHeight(600);
-      setPopupWidth(130);
-    }
-
-    console.log(screenSize);
-    return () => {
-      window.removeEventListener("resize", setDimension);
-    };
-  }, [screenSize]);
-
   const savedCollectionRef = collection(db, "favourites");
   const createSavedInfo = async () => {
     await addDoc(savedCollectionRef, {
