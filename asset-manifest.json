@@ -1,0 +1,15 @@
+{
+  "files": {
+    "main.css": "/ParkWhereSG/static/css/main.fd65474c.css",
+    "main.js": "/ParkWhereSG/static/js/main.2881c40e.js",
+    "static/js/483.f1c1826a.chunk.js": "/ParkWhereSG/static/js/483.f1c1826a.chunk.js",
+    "index.html": "/ParkWhereSG/index.html",
+    "main.fd65474c.css.map": "/ParkWhereSG/static/css/main.fd65474c.css.map",
+    "main.2881c40e.js.map": "/ParkWhereSG/static/js/main.2881c40e.js.map",
+    "483.f1c1826a.chunk.js.map": "/ParkWhereSG/static/js/483.f1c1826a.chunk.js.map"
+  },
+  "entrypoints": [
+    "static/css/main.fd65474c.css",
+    "static/js/main.2881c40e.js"
+  ]
+}
