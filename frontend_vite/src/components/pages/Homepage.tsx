@@ -55,7 +55,7 @@ const Homepage = () => {
 
   useEffect(() => {
     axios
-      .get("http://localhost:3000")
+      .get("https://fierce-puce-shark.cyclic.app/")
       .then((res) => setLtaCarparkAvail(res.data))
       .catch((err) => console.log(err));
   }, []);

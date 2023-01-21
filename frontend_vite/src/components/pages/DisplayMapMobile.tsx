@@ -166,7 +166,7 @@ export function DisplayMapMobile({ lotInfo, currLocation }: IAppProps) {
 
             {selectedCarpark && (
               <Popup
-                style={{ width: `130px` }}
+                style={{ width: "130px", height: "50px" }}
                 longitude={Number(selectedCarpark.Location.split(" ")[1])}
                 latitude={Number(selectedCarpark.Location.split(" ")[0])}
                 closeOnClick={false}
@@ -178,8 +178,8 @@ export function DisplayMapMobile({ lotInfo, currLocation }: IAppProps) {
                     setSelectedCarpark(null);
                   }}
                 >
-                  <Title order={4}>{selectedCarpark.Development}</Title>
-                  <Text fw={700} fz="md">
+                  <Title order={6}>{selectedCarpark.Development}</Title>
+                  <Text fw={300} fz="md">
                     Lots available: {selectedCarpark.AvailableLots}
                   </Text>
                   {/* relevant hdb parking info */}
